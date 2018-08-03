@@ -10,12 +10,13 @@ fetch("").then((result)=>{this.setState({isLoading:false});});
  }
     render(){
         return(
+            <View style={style.mainContainer}>
             <ProgressiveInput
             style={style.SearchBar}
             value={this.state.value}
             isLoading={this.state.isLoading}
-            onChangeText={this.onChangeText.bind(this)}
-          />
+            onChangeText={this.onChangeText.bind(this)}/>
+          </View>
         );
     }
     
