@@ -3,7 +3,7 @@ import {StyleSheet,Text,View, Image,TextInput, TouchableOpacity, KeyboardAvoidin
 
 
 export default class LoginForm extends Component {
- 
+  state={username:'', password:''};
     render() {
       return (
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
@@ -20,13 +20,17 @@ export default class LoginForm extends Component {
               autoCapitalize="none"
               autoCorrect={false}
               onSubmitEditing={()=>this.passwordInput.focus()}
-              style={styles.TextInputStyle}/>
+              style={styles.TextInputStyle}
+              value={this.state.username}
+              onChangeText={username => this.setState({username})}/>
               <TextInput 
               placeholder="password"
               placeholderTextColor='#FFF'
               secureTextEntry
               ref={(input)=> this.passwordInput=input}
-              style={styles.TextInputStyle}/>
+              style={styles.TextInputStyle}
+              value={this.state.password}
+              onChangeText={password => this.setState({password})}/>
               <TouchableOpacity style={styles.ButtonStyle}>
         <Text style={styles.ButtonTextStyle}>Log In</Text>
         </TouchableOpacity></View>
