@@ -1,12 +1,23 @@
-import React, { Component } from 'react';
-import {StyleSheet,Text,View, Image,TextInput, TouchableOpacity, KeyboardAvoidingView,ActivityIndicator} from 'react-native';
 
+import React, { Component } from 'react';
+import {StyleSheet,Text,View, Image,TextInput, TouchableOpacity, KeyboardAvoidingView,ActivityIndicator,Alert} from 'react-native';
+import * as firebase from 'firebase';
 
 export default class LoginForm extends Component {
-  state={username:'', password:'',loading:false};
+  state={username:'', password:'',loading:false, error:''};
 
 onPressSignIn(){
+    const {username,password}=this.state;
     this.setState({loading:true})
+    firebase.auth().signInWithEmailAndPassword(username,password)
+    .catch(()=>{
+        firebase.auth().createUserWithEmailAndPassword(username,password)})
+        .catch(()=>{
+            this.setState({error:'Authentication Failure'});
+            
+        })
+    
+
 }
 
   renderLoading(){
