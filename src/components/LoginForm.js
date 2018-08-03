@@ -1,19 +1,31 @@
 import React, { Component } from 'react';
-import {StyleSheet,Text,View, Image,TextInput, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+import {StyleSheet,Text,View, Image,TextInput, TouchableOpacity, KeyboardAvoidingView,ActivityIndicator} from 'react-native';
 
 
 export default class LoginForm extends Component {
-  state={username:'', password:''};
-    render() {
-      return (
-        <KeyboardAvoidingView behavior="padding" style={styles.container}>
+  state={username:'', password:'',loading:false};
+
+onPressSignIn(){
+    this.setState({loading:true})
+}
+
+  renderLoading(){
+      if(this.state.loading)
+      {
+          return (
+              <View style={styles.logoContainer}><ActivityIndicator size="large"/>
+              </View>
+            
+          )
+      }
+     return(
+         <View>
         <View style={styles.logoContainer}>
         <Image 
         style={styles.logoStyle}
         source={require('../images/logo.png')}/>
         <Text style={styles.TextStyle}>Procurement Service</Text>
         </View>
-    
         <View style={styles.loginContainer}>
               <TextInput placeholder="username"
               placeholderTextColor='#FFF'
@@ -31,9 +43,15 @@ export default class LoginForm extends Component {
               style={styles.TextInputStyle}
               value={this.state.password}
               onChangeText={password => this.setState({password})}/>
-              <TouchableOpacity style={styles.ButtonStyle}>
-        <Text style={styles.ButtonTextStyle}>Log In</Text>
-        </TouchableOpacity></View>
+              <TouchableOpacity style={styles.ButtonStyle} onPress={()=> this.onPressSignIn()}>
+              <Text style={styles.ButtonTextStyle}>Log In</Text></TouchableOpacity>
+            </View>
+        </View>)
+    }
+    render() {
+      return (
+        <KeyboardAvoidingView behavior="padding" style={styles.container}>
+        {this.renderLoading()}
         </KeyboardAvoidingView>
         
       

@@ -2,9 +2,8 @@
 
 import React, { Component } from 'react';
 import {View} from 'react-native';
-import * as firebase from 'firebase';
 import LoginForm from './components/LoginForm';
-
+import * as firebase from 'firebase';
 
 export default class App extends Component {
   componentWillMount(){
