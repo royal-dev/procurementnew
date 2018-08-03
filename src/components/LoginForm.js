@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import mainScreen from './mainScreen';
 import {StyleSheet,Text,View, Image,TextInput, TouchableOpacity, KeyboardAvoidingView,ActivityIndicator,Alert} from 'react-native';
 import * as firebase from 'firebase';
 
