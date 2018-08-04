@@ -22,10 +22,29 @@ export default class LoginForm extends Component {
 		password: '',
 		loading: false,
 		error: '',
-		isLoggedIn: false
+		authUser: null
 	};
+	componentDidMount() {
+		//Get saved user if already there
+		AsyncStorage.getItem('authUser').then(v => (v ? this.setState({
+			authUser: JSON.parse(v)
+		}) : null));
 
-
+		//Save user if auth successful
+		firebase.auth().onAuthStateChanged(authUser => {
+			authUser
+				?
+				this.setState({
+					authUser
+				}) :
+				this.setState({
+					authUser: null
+				});
+			if (authUser) {
+				AsyncStorage.setItem('authUser', JSON.stringify(authUser));
+			}
+		});
+	}
 	onPressSignIn() {
 		const {
 			username,
@@ -36,18 +55,14 @@ export default class LoginForm extends Component {
 		})
 		firebase.auth().signInWithEmailAndPassword(username, password).then(() => {
 			this.setState({
-				isLoggedIn: true,
 				loading: false
 			});
-		 
 		}).catch((e) => {
 			console.log(e);
 			firebase.auth().createUserWithEmailAndPassword(username, password).then(() => {
 				this.setState({
-					isLoggedIn: true,
 					loading: false
 				});
-				
 			}).catch((e) => {
 				console.log(e);
 				this.setState({
@@ -65,7 +80,7 @@ export default class LoginForm extends Component {
           <ActivityIndicator size="large"/>
         </View>;
 		}
-		if (this.state.isLoggedIn) {
+		if (this.state.authUser) {
 			return <MainScreen />;
 		} else {
 			return <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
