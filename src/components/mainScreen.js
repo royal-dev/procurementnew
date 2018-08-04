@@ -49,7 +49,7 @@ export default class MainScreen extends Component {
 			{ this.renderSelected(selected) }
 			<RkCard>
 			<View rkCardHeader>
-			<Text>{selected}</Text></View>
+			<Text>{this.state.selected}</Text></View>
 			</RkCard>
 			
 		  </View>
