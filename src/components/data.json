@@ -1,8 +1,10 @@
 [
 	{
-		"label": "Label 1"
+		"label": "Tamatar",
+		"image": "../images/tomato.jpg"
 	}, {
-		"label": "Label 2"
+		"label": "Pyaaz",
+		"image":"../images/onion.jpg"
 	}, {
 		"label": "Label 3"
 	}, {
