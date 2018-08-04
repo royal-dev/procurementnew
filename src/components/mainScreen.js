@@ -7,8 +7,10 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
+
 import Autocomplete from 'react-native-autocomplete-input';
 import allData from './data.json';
+import { RkCard } from 'react-native-ui-kitten';
 export default class MainScreen extends Component {
 	state = {
 		isLoading: false,
@@ -29,11 +31,11 @@ export default class MainScreen extends Component {
 		data = allData.filter((e) => e.label.startsWith(text)).map((e) => e.label);
 		return (
 			<View style={style.mainContainer}>
-			<View>
-			<Text style={style.InputContainer}>Search Procurement Item</Text>
-			</View>
+			<RkCard>
+			<View rkCardHeader>
+			<Text style={style.InputContainer}>Search Procurement Item</Text></View>
+			<View rkCardContent>
 			<Autocomplete
-			style={style.SearchBar}
 			data={data}
 			onChangeText={text => this.setState({ text })}
 			renderItem={item => (
@@ -42,8 +44,16 @@ export default class MainScreen extends Component {
 				</TouchableOpacity>
 			)}
 			/>
+			</View>
+			</RkCard>
 			{ this.renderSelected(selected) }
+			<RkCard>
+			<View rkCardHeader>
+			<Text>{selected}</Text></View>
+			</RkCard>
+			
 		  </View>
+		  
 		  
 		);
 	}
@@ -51,10 +61,10 @@ export default class MainScreen extends Component {
 }
 const style = StyleSheet.create({
 	InputContainer:{
-		fontWeight: '800',
-		color:'#FFFFFF',
+		fontWeight: '600',
+		
 		borderWidth: 2,
-		backgroundColor:'#013243',
+		borderRadius:15,
 		padding:20,
 		fontSize: 22,
 		justifyContent:'center',
@@ -63,15 +73,17 @@ const style = StyleSheet.create({
 
 	},
 	mainContainer: {
-		flex: 1,
-		backgroundColor: '#C5EFF7'
+		flex:1,
+		backgroundColor: '#C5EFF7',
+		
 	},
 	SearchBar: {
-		paddingTop: 10,
+		height:30,
 		marginRight: 15,
 		marginLeft: 15,
-		paddingBottom: 10,
-		backgroundColor:'white'
+		
+		backgroundColor:'white',
+		
 	},
 	inputTextStyle:{
 		fontSize:18
