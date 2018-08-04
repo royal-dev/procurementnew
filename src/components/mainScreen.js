@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
+import {RkCard} from 'react-native-ui-kitten';
 import Autocomplete from 'react-native-autocomplete-input';
 import allData from './data.json';
 export default class MainScreen extends Component {
@@ -29,6 +30,10 @@ export default class MainScreen extends Component {
 		data = allData.filter((e) => e.label.startsWith(text)).map((e) => e.label);
 		return (
 			<View style={style.mainContainer}>
+			<RkCard>
+			<View RkCardHeader>
+			<Text>Search Procurement Item</Text>
+			</View>
 			<Autocomplete
 			data={data}
 			defaultValue={text}
@@ -40,12 +45,22 @@ export default class MainScreen extends Component {
 			)}
 			/>
 			{ this.renderSelected(selected) }
-          </View>
+		  </RkCard>
+		  </View>
+		  
 		);
 	}
 
 }
 const style = StyleSheet.create({
+	InputContainer:{
+		paddingTop: 10,
+		paddingRight: 10,
+		paddingLeft: 10,
+		paddingBottom: 10,
+
+
+	},
 	mainContainer: {
 		flex: 1,
 		backgroundColor: '#C5EFF7'

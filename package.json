@@ -12,6 +12,7 @@
     "react-native": "0.55.4",
     "react-native-autocomplete-input": "^3.5.0",
     "react-native-progressive-input": "^1.1.0",
+    "react-native-ui-kitten": "^3.0.1",
     "react-native-vector-icons": "^5.0.0"
   },
   "devDependencies": {
