@@ -12,7 +12,7 @@ import allData from './data.json';
 export default class MainScreen extends Component {
 	state = {
 		isLoading: false,
-		text: '',
+		text:'',
 		selected: false
 	}
 	renderSelected(item) {

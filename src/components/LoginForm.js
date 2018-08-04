@@ -11,7 +11,8 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	ActivityIndicator,
-	Alert
+	Alert,
+	AsyncStorage
 } from 'react-native';
 import * as firebase from 'firebase';
 
@@ -23,6 +24,9 @@ export default class LoginForm extends Component {
 		error: '',
 		isLoggedIn: false
 	};
+	componentWillMount(){
+
+	}
 
 	onPressSignIn() {
 		const {
@@ -37,6 +41,7 @@ export default class LoginForm extends Component {
 				isLoggedIn: true,
 				loading: false
 			});
+		 AsyncStorage.multiSet([['user',{username}],['pass',{password}]]);
 		}).catch((e) => {
 			console.log(e);
 			firebase.auth().createUserWithEmailAndPassword(username, password).then(() => {
@@ -44,6 +49,7 @@ export default class LoginForm extends Component {
 					isLoggedIn: true,
 					loading: false
 				});
+				AsyncStorage.multiSet([['user',{username}],['pass',{password}]]);
 			}).catch((e) => {
 				console.log(e);
 				this.setState({
