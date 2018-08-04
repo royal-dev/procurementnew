@@ -1,37 +1,70 @@
-
-import React, { Component } from 'react';
-import mainScreen from './mainScreen';
-import {StyleSheet,Text,View, Image,TextInput, TouchableOpacity, KeyboardAvoidingView,ActivityIndicator,Alert} from 'react-native';
+import React, {
+	Component
+} from 'react';
+import MainScreen from './MainScreen';
+import {
+	StyleSheet,
+	Text,
+	View,
+	Image,
+	TextInput,
+	TouchableOpacity,
+	KeyboardAvoidingView,
+	ActivityIndicator,
+	Alert
+} from 'react-native';
 import * as firebase from 'firebase';
 
 export default class LoginForm extends Component {
-  state={username:'', password:'',loading:false, error:''};
+	state = {
+		username: '',
+		password: '',
+		loading: false,
+		error: '',
+		isLoggedIn: false
+	};
 
-onPressSignIn(){
-    const {username,password}=this.state;
-    this.setState({loading:true})
-    firebase.auth().signInWithEmailAndPassword(username,password)
-    .catch(()=>{
-        firebase.auth().createUserWithEmailAndPassword(username,password)})
-        .catch(()=>{
-            this.setState({error:'Authentication Failure'});
-            
-        })
-    
+	onPressSignIn() {
+		const {
+			username,
+			password
+		} = this.state;
+		this.setState({
+			loading: true
+		})
+		firebase.auth().signInWithEmailAndPassword(username, password).then(() => {
+			this.setState({
+				isLoggedIn: true,
+				loading: false
+			});
+		}).catch((e) => {
+			console.log(e);
+			firebase.auth().createUserWithEmailAndPassword(username, password).then(() => {
+				this.setState({
+					isLoggedIn: true,
+					loading: false
+				});
+			}).catch((e) => {
+				console.log(e);
+				this.setState({
+					error: 'Authentication Failure',
+					loading: false
+				});
+				Alert.alert('Error', 'Authentication Failure');
+			});
+		});
+	}
 
-}
-
-  renderLoading(){
-      if(this.state.loading)
-      {
-          return (
-              <View style={styles.logoContainer}><ActivityIndicator size="large"/>
-              </View>
-            
-          )
-      }
-     return(
-         <View>
+	render() {
+		if (this.state.loading) {
+			return <View style={styles.logoContainer}>
+          <ActivityIndicator size="large"/>
+        </View>;
+		}
+		if (this.state.isLoggedIn) {
+			return <MainScreen />;
+		} else {
+			return <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
         <View style={styles.logoContainer}>
         <Image 
         style={styles.logoStyle}
@@ -58,64 +91,53 @@ onPressSignIn(){
               <TouchableOpacity style={styles.ButtonStyle} onPress={()=> this.onPressSignIn()}>
               <Text style={styles.ButtonTextStyle}>Log In</Text></TouchableOpacity>
             </View>
-        </View>)
-    }
-    render() {
-      return (
-        <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        {this.renderLoading()}
-        </KeyboardAvoidingView>
-        
-      
-        
-      );
-    }
-  }
-  
-  const styles = StyleSheet.create({
-    ButtonTextStyle:{
-  textAlign:'center',
-  color:'#FFF',
-  fontWeight:'700'
-    },
-    ButtonStyle:{
-      backgroundColor:'#446CB3',
-      paddingVertical:15,
-      marginBottom:10,
-  paddingHorizontal: 10
-    },
-    TextInputStyle: {
-      height: 40,
-      backgroundColor:'#52B3D9',
-      marginBottom: 20,
-      paddingHorizontal: 10,
-      color: '#FFF'
-  },
-  loginContainer:{
-      padding: 20
-  },
-    container: {
-      flex: 1,
-      backgroundColor: '#C5EFF7',
-    },
-    logoContainer:{
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexGrow:1
-  
-    },
-    logoStyle:{
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: 250,
-      height: 250
-    },
-    TextStyle:{
-      fontSize: 25,
-      color: '#03A678',
-  
-  
-    }
-  
-  });
-  
+      </KeyboardAvoidingView>;
+		}
+	}
+}
+
+const styles = StyleSheet.create({
+	ButtonTextStyle: {
+		textAlign: 'center',
+		color: '#FFF',
+		fontWeight: '700'
+	},
+	ButtonStyle: {
+		backgroundColor: '#446CB3',
+		paddingVertical: 15,
+		marginBottom: 10,
+		paddingHorizontal: 10,
+		borderRadius: 10
+	},
+	TextInputStyle: {
+		height: 40,
+		backgroundColor: '#52B3D9',
+		marginBottom: 20,
+		paddingHorizontal: 10,
+		color: '#FFF'
+	},
+	loginContainer: {
+		padding: 20
+	},
+	container: {
+		flex: 1,
+		backgroundColor: '#C5EFF7',
+	},
+	logoContainer: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		flexGrow: 1,
+		height: 250
+	},
+	logoStyle: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: 250,
+		height: 250
+	},
+	TextStyle: {
+		fontSize: 25,
+		color: '#03A678',
+
+	}
+});
