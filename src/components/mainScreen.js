@@ -35,7 +35,6 @@ export default class MainScreen extends Component {
 			<Autocomplete
 			style={style.SearchBar}
 			data={data}
-			defaultValue={text}
 			onChangeText={text => this.setState({ text })}
 			renderItem={item => (
 				<TouchableOpacity onPress={() => this.setState({  text:item,selected:  item })}>

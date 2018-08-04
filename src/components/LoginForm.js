@@ -24,9 +24,7 @@ export default class LoginForm extends Component {
 		error: '',
 		isLoggedIn: false
 	};
-	componentWillMount(){
 
-	}
 
 	onPressSignIn() {
 		const {
@@ -41,7 +39,7 @@ export default class LoginForm extends Component {
 				isLoggedIn: true,
 				loading: false
 			});
-		 AsyncStorage.multiSet([['user',{username}],['pass',{password}]]);
+		 
 		}).catch((e) => {
 			console.log(e);
 			firebase.auth().createUserWithEmailAndPassword(username, password).then(() => {
@@ -49,7 +47,7 @@ export default class LoginForm extends Component {
 					isLoggedIn: true,
 					loading: false
 				});
-				AsyncStorage.multiSet([['user',{username}],['pass',{password}]]);
+				
 			}).catch((e) => {
 				console.log(e);
 				this.setState({
