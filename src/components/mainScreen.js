@@ -34,35 +34,43 @@ export default class MainScreen extends Component {
 		isLoading: false,
 		text: '',
 		selected: false,
-		amount:'',
-		weight:'',
-		rate:''
+		amount: '',
+		weight: '',
+		rate: ''
 	}
-	Validate(){
-		const {amount,weight,rate}=this.state;
-		
-		if(amount=='' ){
-			const result=weight*rate;
-			this.setState({amount:result})
-		}else if(weight==''){
-		 const	result=amount/rate;
-			this.setState({weight:result})
-		}else if(rate==''){
-			const result=amount/weight;
-			this.setState({rate:result})
-		}else{
-			Alert.alert('Error','Please check the data');
+	validator() {
+		const {
+			amount,
+			weight,
+			rate
+		} = this.state;
+
+		if (amount == '' && weight != '' && rate != '') {
+			let result = parseInt(weight) * rate;
+			this.setState({
+				amount: "" + result
+			})
+		} else if (weight == '' && amount != '' && rate != '') {
+			let result = parseInt(amount) / rate;
+			this.setState({
+				weight: "" + result
+			})
+		} else if (rate == '' && amount != '' && weight != '') {
+			let result = parseInt(amount) / weight;
+			this.setState({
+				rate: "" + result
+			})
+		} else {
+			Alert.alert('Error', 'Please check the data');
 		}
 
-
-
 	}
-	logout(){
+	logout() {
 		firebase.auth().signOut().then(function() {
 			// Sign-out successful.
-		 }, function(error) {
+		}, function(error) {
 			// An error happened.
-		 });
+		});
 	}
 	renderSelected(item) {
 		if (!!!item) {
@@ -112,7 +120,7 @@ export default class MainScreen extends Component {
 		 </CardItem>
 		 <CardItem>
 		 <Content>
-		 <Button block info onPress={this.Validate}>
+		 <Button block info onPress={()=> this.validator()}>
             <Text>Add to Sheet</Text>
           </Button>
         </Content>
@@ -164,7 +172,7 @@ export default class MainScreen extends Component {
 const style = StyleSheet.create({
 	inputTextStyle: {
 		fontSize: 22,
-	
+
 	},
 	cardImage: {
 		height: 200,
