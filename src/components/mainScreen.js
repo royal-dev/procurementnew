@@ -4,7 +4,8 @@ import React, {
 import {
 	TouchableOpacity,
 	StyleSheet,
-	Image
+	Image,
+	Alert
 } from 'react-native';
 
 import Autocomplete from 'react-native-autocomplete-input';
@@ -32,7 +33,29 @@ export default class MainScreen extends Component {
 	state = {
 		isLoading: false,
 		text: '',
-		selected: false
+		selected: false,
+		amount:'',
+		weight:'',
+		rate:''
+	}
+	Validate(){
+		const {amount,weight,rate}=this.state;
+		
+		if(amount=='' ){
+			const result=weight*rate;
+			this.setState({amount:result})
+		}else if(weight==''){
+		 const	result=amount/rate;
+			this.setState({weight:result})
+		}else if(rate==''){
+			const result=amount/weight;
+			this.setState({rate:result})
+		}else{
+			Alert.alert('Error','Please check the data');
+		}
+
+
+
 	}
 	logout(){
 		firebase.auth().signOut().then(function() {
@@ -52,7 +75,7 @@ export default class MainScreen extends Component {
 		 </CardItem>
 		 <CardItem>
 			<Left>
-				<Text>{item.label}</Text>
+				<Text style={style.inputTextStyle}>{item.label}</Text>
 			</Left>
 		 </CardItem>
 		 <CardItem cardBody>
@@ -65,17 +88,34 @@ export default class MainScreen extends Component {
 			}>
 				<Item>
 					<Icon type="FontAwesome" name="money" />
-					<Input keyboardType="numeric" placeholder="Amount" />
+					<Input 
+					onChangeText={amount=> this.setState({amount})}
+					value={this.state.amount}
+					keyboardType="numeric" 
+					placeholder="Amount" />
 				</Item>
 				<Item>
 					<Icon name="ios-pricetag" />
-					<Input keyboardType="numeric" placeholder="Rate" />
+					<Input 
+					onChangeText={rate=> this.setState({rate})}
+					value={this.state.rate}
+					keyboardType="numeric" placeholder="Rate" />
 				</Item>
 				<Item>
 					<Icon type="MaterialCommunityIcons" name="weight-kilogram" />
-					<Input keyboardType="numeric" placeholder="Weight" />
+					<Input 
+					onChangeText={weight=> this.setState({weight})}
+					value={this.state.weight}
+					keyboardType="numeric" placeholder="Weight" />
 				</Item>
 			</Content>
+		 </CardItem>
+		 <CardItem>
+		 <Content>
+		 <Button block info onPress={this.Validate}>
+            <Text>Add to Sheet</Text>
+          </Button>
+        </Content>
 		 </CardItem>
 	  </Card>;
 	}
@@ -92,7 +132,7 @@ export default class MainScreen extends Component {
 			<Container>
 				<Header>
 					<Body>
-					<Title>Procurement</Title>
+					<Title>Procurement Service</Title>
 					</Body>
 					<Right>
 						<Button hasText transparent onPress={this.logout}>
@@ -123,7 +163,8 @@ export default class MainScreen extends Component {
 }
 const style = StyleSheet.create({
 	inputTextStyle: {
-		fontSize: 18
+		fontSize: 22,
+	
 	},
 	cardImage: {
 		height: 200,
