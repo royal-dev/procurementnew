@@ -29,7 +29,7 @@ export default class MainScreen extends Component {
 		item = allData.filter((e) => e.label == item)[0];
 		//https://shoutem.github.io/docs/ui-toolkit/components/cards
 		return <Card>
-			{item.image && <Image source={item.image}/>}
+			{item.image && <Image style={style.ImageContainer} source={item.image}/>}
 			<View>
 				<Text>{item.label}</Text>
 			</View>
@@ -46,7 +46,7 @@ export default class MainScreen extends Component {
 		}
 		return (
 			<View styleName="fill-parent">
-				<NavigationBar title="Search Item"/>
+				<NavigationBar title="Procurement"/>
 				<View
 					style={{
 					width: window.width,
@@ -74,14 +74,12 @@ const style = StyleSheet.create({
 	navbarTitle: {
 		width: "auto"
 	},
-	InputContainer: {
-		fontWeight: '600',
+	ImageContainer: {
+		
 
-		borderWidth: 2,
+		borderWidth: 1,
 		borderRadius: 15,
 		padding: 20,
-		fontSize: 22,
-		justifyContent: 'center',
 		marginBottom: 15
 
 	},
