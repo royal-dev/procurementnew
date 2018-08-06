@@ -48,19 +48,12 @@ export default class MainScreen extends Component {
 		var GoogleSpreadsheet = require('google-spreadsheet');
 var async = require('async');
 
-// spreadsheet key is the long id in the sheets URL
 var doc = new GoogleSpreadsheet('1tN7RCtvgBTdYNZLSh59UsO5F4xkSZ9F0n7dxc1uT3Q8');
 var sheet;
 
 async.series([
   function setAuth(step) {
-    // see notes below for authentication instructions!
     var creds = require('./procurement-1535458d26e2.json');
-    // OR, if you cannot save the file locally (like on heroku)
-    var creds_json = {
-      client_email: 'procurement@procurement-212419.iam.gserviceaccount.com',
-      private_key: '535458d26e289cdda6f3790f92ecaca2bbaff37'
-    }
     doc.useServiceAccountAuth(creds, step);
   }]);
  
