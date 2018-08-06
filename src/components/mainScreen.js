@@ -41,23 +41,10 @@ export default class MainScreen extends Component {
 		timestamp: ''
 	}
 	componentWillMount(){
-		{this.getTime()};
+		
 	}
 
-	googleSheets(){
-		var GoogleSpreadsheet = require('google-spreadsheet');
-var async = require('async');
-
-var doc = new GoogleSpreadsheet('1tN7RCtvgBTdYNZLSh59UsO5F4xkSZ9F0n7dxc1uT3Q8');
-var sheet;
-
-async.series([
-  function setAuth(step) {
-    var creds = require('./procurement-1535458d26e2.json');
-    doc.useServiceAccountAuth(creds, step);
-  }]);
- 
-	}
+	
 
 	getTime() {
 		var date, TimeType, hour, minutes, seconds, fullTime;
@@ -83,7 +70,7 @@ async.series([
 		if (seconds < 10) {
 			seconds = '0' + seconds.toString();
 		}
-		fullTime = hour.toString() + ':' + minutes.toString() + ':' + seconds.toString() + ' ' + TimeType.toString();
+		fullTime = hour.toString() + ':' + minutes.toString() +  ' ' + TimeType.toString();
 		this.setState({timestamp: fullTime});
 	}
 
@@ -130,6 +117,7 @@ async.series([
 			return null;
 		}
 		item = allData.filter((e) => e.label == item)[0];
+		{this.getTime()};
 		return <Card>
 			<CardItem cardBody>
 				{item.image && <Image source={item.image} style={style.cardImage} />}
