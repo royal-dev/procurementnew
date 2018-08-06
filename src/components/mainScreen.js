@@ -5,7 +5,8 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	Image,
-	Alert
+	Alert,
+	ToastAndroid
 } from 'react-native';
 
 import Autocomplete from 'react-native-autocomplete-input';
@@ -27,8 +28,8 @@ import {
 	Text,
 	Form
 } from 'native-base';
-import * as firebase from 'firebase';
 
+import * as firebase from 'firebase';
 export default class MainScreen extends Component {
 	state = {
 		isLoading: false,
@@ -38,6 +39,8 @@ export default class MainScreen extends Component {
 		weight: '',
 		rate: ''
 	}
+
+
 	validator() {
 		const {
 			amount,
@@ -48,22 +51,24 @@ export default class MainScreen extends Component {
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseInt(weight) * rate;
 			this.setState({
-				amount: "" + result
+				amount: "" + result + " Rs."
 			})
+			
 		} else if (weight == '' && amount != '' && rate != '') {
 			let result = parseInt(amount) / rate;
 			this.setState({
-				weight: "" + result
+				weight: "" + result + " kgs."
 			})
 		} else if (rate == '' && amount != '' && weight != '') {
 			let result = parseInt(amount) / weight;
 			this.setState({
-				rate: "" + result
+				rate: "" + result + " Rs."
 			})
 		} else {
 			Alert.alert('Error', 'Please check the data');
 		}
 
+	
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
