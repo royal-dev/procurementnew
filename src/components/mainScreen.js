@@ -7,7 +7,7 @@ import {
 	Image,
 	Alert,
 	ToastAndroid
-} from 'react-native'; 
+} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import allData from './data';
 import {
@@ -40,11 +40,9 @@ export default class MainScreen extends Component {
 		rate: '',
 		timestamp: ''
 	}
-	componentWillMount(){
-		
-	}
+	componentWillMount() {
 
-	
+	}
 
 	getTime() {
 		var date, TimeType, hour, minutes, seconds, fullTime;
@@ -52,8 +50,7 @@ export default class MainScreen extends Component {
 		hour = date.getHours();
 		if (hour <= 11) {
 			TimeType = 'AM';
-		}
-		else {
+		} else {
 			TimeType = 'PM';
 		}
 		if (hour > 12) {
@@ -70,8 +67,7 @@ export default class MainScreen extends Component {
 		if (seconds < 10) {
 			seconds = '0' + seconds.toString();
 		}
-		fullTime = hour.toString() + ':' + minutes.toString() +  ' ' + TimeType.toString();
-		this.setState({timestamp: fullTime});
+		return hour.toString() + ':' + minutes.toString() + ' ' + TimeType.toString();
 	}
 
 	validator() {
@@ -103,12 +99,11 @@ export default class MainScreen extends Component {
 			Alert.alert('Error', 'Please check the data');
 		}
 
-
 	}
 	logout() {
-		firebase.auth().signOut().then(function () {
+		firebase.auth().signOut().then(function() {
 			// Sign-out successful.
-		}, function (error) {
+		}, function(error) {
 			// An error happened.
 		});
 	}
@@ -117,7 +112,6 @@ export default class MainScreen extends Component {
 			return null;
 		}
 		item = allData.filter((e) => e.label == item)[0];
-		{this.getTime()};
 		return <Card>
 			<CardItem cardBody>
 				{item.image && <Image source={item.image} style={style.cardImage} />}
@@ -126,8 +120,6 @@ export default class MainScreen extends Component {
 				<Left>
 					<Text style={style.inputTextStyle}>{item.label}</Text>
 				</Left>
-				<Right><Icon  name="ios-time" />
-				<Text style={style.timeStampStyle}>{this.state.timestamp}</Text></Right>
 			</CardItem>
 			<CardItem cardBody>
 				<Content style={
@@ -218,8 +210,8 @@ export default class MainScreen extends Component {
 
 }
 const style = StyleSheet.create({
-	timeStampStyle:{
-fontSize:16
+	timeStampStyle: {
+		fontSize: 16
 	},
 	inputTextStyle: {
 		fontSize: 22,
