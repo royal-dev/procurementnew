@@ -7,7 +7,7 @@ import {
 	Image,
 	Alert,
 	ToastAndroid
-} from 'react-native'; 
+} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import allData from './data';
 import {
@@ -40,11 +40,33 @@ export default class MainScreen extends Component {
 		rate: '',
 		timestamp: ''
 	}
-	componentWillMount(){
-		
-	}
+	componentWillMount() {
 
-	
+	}
+	googleSheets() {
+		var formData = new FormData();
+		formData.append("values", JSON.stringify([
+			{
+				"ItemName": "T",
+				"Weight": 1,
+				"Rate": 1,
+				"Amount": 1,
+				"UserID": "11"
+			}
+		]))
+		fetch('https://script.google.com/macros/s/AKfycbyaudxHGu0wkGqPmQRHkGBEHoTJI6-jAPFtERIihearDxsKCEc/exec', {
+			mode: 'no-cors',
+			method: 'post',
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			},
+			body: formData
+		}).then(function(response) {
+			console.log(response.status)
+			console.log("response");
+			console.log(response)
+		}).catch(console.error);
+	}
 
 	getTime() {
 		var date, TimeType, hour, minutes, seconds, fullTime;
@@ -52,8 +74,7 @@ export default class MainScreen extends Component {
 		hour = date.getHours();
 		if (hour <= 11) {
 			TimeType = 'AM';
-		}
-		else {
+		} else {
 			TimeType = 'PM';
 		}
 		if (hour > 12) {
@@ -70,8 +91,7 @@ export default class MainScreen extends Component {
 		if (seconds < 10) {
 			seconds = '0' + seconds.toString();
 		}
-		fullTime = hour.toString() + ':' + minutes.toString() +  ' ' + TimeType.toString();
-		this.setState({timestamp: fullTime});
+		return hour.toString() + ':' + minutes.toString() + ' ' + TimeType.toString();
 	}
 
 	validator() {
@@ -86,29 +106,25 @@ export default class MainScreen extends Component {
 			this.setState({
 				amount: "" + result + " Rs."
 			})
-			this.googleSheets();
 		} else if (weight == '' && amount != '' && rate != '') {
 			let result = parseInt(amount) / rate;
 			this.setState({
 				weight: "" + result + " kgs."
 			})
-			this.googleSheets();
 		} else if (rate == '' && amount != '' && weight != '') {
 			let result = parseInt(amount) / weight;
 			this.setState({
 				rate: "" + result + " Rs."
 			})
-			this.googleSheets();
 		} else {
-			Alert.alert('Error', 'Please check the data');
+			return Alert.alert('Error', 'Please check the data');
 		}
-
-
+		this.googleSheets();
 	}
 	logout() {
-		firebase.auth().signOut().then(function () {
+		firebase.auth().signOut().then(function() {
 			// Sign-out successful.
-		}, function (error) {
+		}, function(error) {
 			// An error happened.
 		});
 	}
@@ -117,7 +133,6 @@ export default class MainScreen extends Component {
 			return null;
 		}
 		item = allData.filter((e) => e.label == item)[0];
-		{this.getTime()};
 		return <Card>
 			<CardItem cardBody>
 				{item.image && <Image source={item.image} style={style.cardImage} />}
@@ -126,8 +141,6 @@ export default class MainScreen extends Component {
 				<Left>
 					<Text style={style.inputTextStyle}>{item.label}</Text>
 				</Left>
-				<Right><Icon  name="ios-time" />
-				<Text style={style.timeStampStyle}>{this.state.timestamp}</Text></Right>
 			</CardItem>
 			<CardItem cardBody>
 				<Content style={
@@ -218,8 +231,8 @@ export default class MainScreen extends Component {
 
 }
 const style = StyleSheet.create({
-	timeStampStyle:{
-fontSize:16
+	timeStampStyle: {
+		fontSize: 16
 	},
 	inputTextStyle: {
 		fontSize: 22,
