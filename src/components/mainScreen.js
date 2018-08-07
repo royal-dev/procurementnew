@@ -40,18 +40,24 @@ export default class MainScreen extends Component {
 		rate: '',
 		timestamp: ''
 	}
-	componentWillMount() {
 
+	addtoFirebase(){
+		const {amount,rate,weight,selected}=this.state;
+		firebase.database().ref('procurements/').push({
+			amount,rate,weight,selected
+
+		}).then((data)=>{console.log('data:',data)})
+		.catch((e)=>console.log('error',e))
 	}
 	googleSheets() {
 		var formData = new FormData();
 		formData.append("values", JSON.stringify([
 			{
-				"ItemName": "T",
-				"Weight": 1,
-				"Rate": 1,
-				"Amount": 1,
-				"UserID": "11"
+				"ItemName": this.state.selected,
+				"Weight": this.state.weight,
+				"Rate": this.state.rate,
+				"Amount": this.state.amount,
+				"UserID": firebase.auth().currentUser.email
 			}
 		]))
 		fetch('https://script.google.com/macros/s/AKfycbyaudxHGu0wkGqPmQRHkGBEHoTJI6-jAPFtERIihearDxsKCEc/exec', {
@@ -65,7 +71,8 @@ export default class MainScreen extends Component {
 			console.log(response.status)
 			console.log("response");
 			console.log(response)
-		}).catch(console.error);
+		}).catch(console.log);
+		firebase.database().ref('procurements/').remove();
 	}
 
 	getTime() {
@@ -119,13 +126,13 @@ export default class MainScreen extends Component {
 		} else {
 			return Alert.alert('Error', 'Please check the data');
 		}
-		this.googleSheets();
+	
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
 			// Sign-out successful.
 		}, function(error) {
-			// An error happened.
+			Alert.alert('Error','Temporary Error, 400');
 		});
 	}
 	renderSelected(item) {
@@ -179,11 +186,18 @@ export default class MainScreen extends Component {
 			
 			
 			<CardItem>
-				<Content>
-					<Button block info onPress={() => this.validator()}>
-						<Text>Add to Sheet</Text>
+		
+				<Left>
+				<Button danger onPress={() => this.validator()}>
+						<Text>Add to Sheets</Text>
 					</Button>
-				</Content>
+					
+					</Left><Right>
+					<Button info onPress={() => this.validator()}>
+						<Text>Procure Item</Text>
+					</Button>
+				</Right>
+				
 			</CardItem>
 		</Card>;
 	}

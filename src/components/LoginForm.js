@@ -15,10 +15,8 @@ import {
 	AsyncStorage
 } from 'react-native';
 import * as firebase from 'firebase';
-import {
-	GoogleSignin,
-	GoogleSigninButton
-} from 'react-native-google-signin';
+import {Button} from 'native-base';
+import { Autocomplete } from 'react-native-autocomplete-input';
 export default class LoginForm extends Component {
 	state = {
 		username: '',
@@ -47,54 +45,10 @@ export default class LoginForm extends Component {
 				AsyncStorage.setItem('authUser', JSON.stringify(authUser));
 			}
 		});
-		this.setupGoogleSignin();
 	}
-	async setupGoogleSignin() {
-		try {
-			await GoogleSignin.hasPlayServices({
-				autoResolve: true
-			});
-			await GoogleSignin.configure({
-				scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-				webClientId: '1065488977040-ha2vb5un8q8lqu6ur44pg1vilci4iot4.apps.googleusercontent.com',
-				offlineAccess: true
-			});
-
-			const user = await GoogleSignin.currentUserAsync();
-			console.log(user);
-			//this.setState({user});
-		} catch (err) {
-			console.log("Play services error", err.code, err.message);
-		}
-	}
+	
 	onPressSignIn() {
-		GoogleSignin.hasPlayServices({
-				autoResolve: true
-			})
-			.then(() => {
-				GoogleSignin.signIn()
-					.then((data) => {
-						// Create a new Firebase credential with the token
-						const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
-						// Login with the credential
-						return firebase.auth().signInAndRetrieveDataWithCredential(credential);
-					})
-					.then((user) => {
-						// If you need to do anything with the user, do it here
-						// The user will be logged in automatically by the
-						// `onAuthStateChanged` listener we set up in App.js earlier
-					})
-					.catch((error) => {
-						console.error(JSON.stringify(error))
-						// For details of error codes, see the docs
-						// The message contains the default Firebase string
-						// representation of the error
-					});
-			})
-			.catch(err => {
-				console.log('Play services error', err.code, err.message);
-			});
-		/*
+	
 		const {
 			username,
 			password
@@ -120,7 +74,7 @@ export default class LoginForm extends Component {
 				});
 				Alert.alert('Error', 'Authentication Failure');
 			});
-		});*/
+		});
 	}
 
 	render() {
@@ -140,13 +94,23 @@ export default class LoginForm extends Component {
         <Text style={styles.TextStyle}>Procurement Service</Text>
         </View>
         <View style={styles.loginContainer}>
-		  <GoogleSigninButton
-					style={{ height: 48 }}
-					size={GoogleSigninButton.Size.Wide}
-					color={GoogleSigninButton.Color.Dark}
-					onPress={()=>this.onPressSignIn()}/>
+		  <TextInput placeholder='email address' 
+		  value={this.state.username} 
+		  style={styles.TextInputStyle}
+		  autoCorrect={false}
+		  onChangeText={(username)=> this.setState({username})}
+		  
+		  onSubmitEditing={()=> this.passwordInput.focus()}/>
+		  <TextInput placeholder='password' 
+		  value={this.state.password} 
+		  style={styles.TextInputStyle}
+		  secureTextEntry
+		  ref={(input)=> this.passwordInput=input}
+		  onChangeText={(password)=> this.setState({password})}
+		  />
+		  <Button block info onPress={this.onPressSignIn()}><Text>Login</Text></Button>
             </View>
-      </KeyboardAvoidingView>;
+      </KeyboardAvoidingView>
 		}
 	}
 }
