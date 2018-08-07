@@ -55,8 +55,9 @@ export default class LoginForm extends Component {
 				autoResolve: true
 			});
 			await GoogleSignin.configure({
+				scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 				webClientId: '1065488977040-ha2vb5un8q8lqu6ur44pg1vilci4iot4.apps.googleusercontent.com',
-				offlineAccess: false
+				offlineAccess: true
 			});
 
 			const user = await GoogleSignin.currentUserAsync();
@@ -76,7 +77,7 @@ export default class LoginForm extends Component {
 						// Create a new Firebase credential with the token
 						const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
 						// Login with the credential
-						return firebase.auth().signInWithCredential(credential);
+						return firebase.auth().signInAndRetrieveDataWithCredential(credential);
 					})
 					.then((user) => {
 						// If you need to do anything with the user, do it here

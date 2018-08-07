@@ -43,6 +43,30 @@ export default class MainScreen extends Component {
 	componentWillMount() {
 
 	}
+	googleSheets() {
+		var formData = new FormData();
+		formData.append("values", JSON.stringify([
+			{
+				"ItemName": "T",
+				"Weight": 1,
+				"Rate": 1,
+				"Amount": 1,
+				"UserID": "11"
+			}
+		]))
+		fetch('https://script.google.com/macros/s/AKfycbyaudxHGu0wkGqPmQRHkGBEHoTJI6-jAPFtERIihearDxsKCEc/exec', {
+			mode: 'no-cors',
+			method: 'post',
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			},
+			body: formData
+		}).then(function(response) {
+			console.log(response.status)
+			console.log("response");
+			console.log(response)
+		}).catch(console.error);
+	}
 
 	getTime() {
 		var date, TimeType, hour, minutes, seconds, fullTime;
@@ -82,23 +106,20 @@ export default class MainScreen extends Component {
 			this.setState({
 				amount: "" + result + " Rs."
 			})
-			this.googleSheets();
 		} else if (weight == '' && amount != '' && rate != '') {
 			let result = parseInt(amount) / rate;
 			this.setState({
 				weight: "" + result + " kgs."
 			})
-			this.googleSheets();
 		} else if (rate == '' && amount != '' && weight != '') {
 			let result = parseInt(amount) / weight;
 			this.setState({
 				rate: "" + result + " Rs."
 			})
-			this.googleSheets();
 		} else {
-			Alert.alert('Error', 'Please check the data');
+			return Alert.alert('Error', 'Please check the data');
 		}
-
+		this.googleSheets();
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
