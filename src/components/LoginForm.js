@@ -1,7 +1,7 @@
 import React, {
 	Component
 } from 'react';
-import MainScreen from './MainScreen';
+import MainScreen from './mainScreen';
 import {
 	StyleSheet,
 	Text,
