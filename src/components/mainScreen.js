@@ -8,6 +8,7 @@ import {
 	Alert,
 	ToastAndroid
 } from 'react-native';
+
 import Autocomplete from 'react-native-autocomplete-input';
 import allData from './data';
 import {
@@ -38,16 +39,13 @@ export default class MainScreen extends Component {
 		amount: '',
 		weight: '',
 		rate: '',
-		timestamp: ''
+		timestamp: '',
+		pList: []
 	}
 
-	addtoFirebase(){
-		const {amount,rate,weight,selected}=this.state;
-		firebase.database().ref('procurements/').push({
-			amount,rate,weight,selected
-
-		}).then((data)=>{console.log('data:',data)})
-		.catch((e)=>console.log('error',e))
+	addtoList(){
+		const {amount,weight,selected,rate}=this.state;
+		
 	}
 	googleSheets() {
 		var formData = new FormData();
@@ -99,6 +97,9 @@ export default class MainScreen extends Component {
 			seconds = '0' + seconds.toString();
 		}
 		return hour.toString() + ':' + minutes.toString() + ' ' + TimeType.toString();
+	}
+	showList(){
+		
 	}
 
 	validator() {
@@ -186,17 +187,11 @@ export default class MainScreen extends Component {
 			
 			
 			<CardItem>
-		
-				<Left>
-				<Button danger onPress={() => this.validator()}>
-						<Text>Add to Sheets</Text>
-					</Button>
-					
-					</Left><Right>
-					<Button info onPress={() => this.validator()}>
+		<Content>
+					<Button block info onPress={() => this.validator()}>
 						<Text>Procure Item</Text>
 					</Button>
-				</Right>
+				</Content>
 				
 			</CardItem>
 		</Card>;
