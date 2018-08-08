@@ -6,7 +6,8 @@ import {
 	StyleSheet,
 	Image,
 	Alert,
-	ToastAndroid
+	ToastAndroid,
+	ListView
 } from 'react-native';
 
 import Autocomplete from 'react-native-autocomplete-input';
@@ -43,9 +44,43 @@ export default class MainScreen extends Component {
 		pList: []
 	}
 
+	constructor(props) {
+
+		super(props);
+	
+		const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+		
+		this.state = {
+	
+		  dataSource: ds.cloneWithRows(this.state.pList),
+		
+		};
+	
+	  }
+	  ListViewItemSeparator = () => {
+		return (
+		  <View
+			style={{
+			  height: .5,
+			  width: "100%",
+			  backgroundColor: "#000",
+			}}
+		  />
+		);
+	  }
+
 	addtoList(){
 		const {amount,weight,selected,rate}=this.state;
-		
+		this.setState((prevState) => {
+			prevState.pList.push('listItem',{
+				amount: amount,
+				weight:weight,
+				selected:selected,
+				rate:rate
+			}
+			);
+			return prevState; 
+			})
 	}
 	googleSheets() {
 		var formData = new FormData();
@@ -127,7 +162,8 @@ export default class MainScreen extends Component {
 		} else {
 			return Alert.alert('Error', 'Please check the data');
 		}
-	
+		this.addtoList();
+
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
@@ -194,6 +230,17 @@ export default class MainScreen extends Component {
 				</Content>
 				
 			</CardItem>
+			<CardItem>
+			<ListView
+ 
+ 				dataSource={this.state.dataSource}
+
+ 				renderSeparator= {this.ListViewItemSeparator}
+ 				renderRow={(rowData) => <Text style={styles.rowViewContainer}>{rowData}</Text>
+		   }
+
+/>
+				</CardItem>
 		</Card>;
 	}
 	render() {
