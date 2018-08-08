@@ -140,7 +140,7 @@ export default class MainScreen extends Component {
 	}
 	showList() {
 
-		return<ListShow/>
+		return <ListShow/>;
 	}
 
 	validator() {
