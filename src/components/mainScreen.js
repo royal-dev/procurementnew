@@ -7,7 +7,8 @@ import {
 	Image,
 	Alert,
 	ToastAndroid,
-	ListView
+	ListView,
+	View
 } from 'react-native';
 
 import Autocomplete from 'react-native-autocomplete-input';
@@ -31,35 +32,32 @@ import {
 	Subtitle
 } from 'native-base';
 
+const ds = new ListView.DataSource({
+	rowHasChanged: (r1, r2) => r1 !== r2
+});
+
 import * as firebase from 'firebase';
 export default class MainScreen extends Component {
-	state = {
-		isLoading: false,
-		text: '',
-		selected: false,
-		amount: '',
-		weight: '',
-		rate: '',
-		timestamp: '',
-		pList: []
-	}
 
 	constructor(props) {
 
 		super(props);
-	
-		const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-		
+
 		this.state = {
-	
-		  dataSource: ds.cloneWithRows(this.state.pList),
-		
+			isLoading: false,
+			text: '',
+			selected: false,
+			amount: '',
+			weight: '',
+			rate: '',
+			timestamp: '',
+			pList: []
 		};
-	
-	  }
-	  ListViewItemSeparator = () => {
+		this.state.dataSource = ds.cloneWithRows(this.state.pList);
+	}
+	ListViewItemSeparator = () => {
 		return (
-		  <View
+			<View
 			style={{
 			  height: .5,
 			  width: "100%",
@@ -67,20 +65,25 @@ export default class MainScreen extends Component {
 			}}
 		  />
 		);
-	  }
+	}
 
-	addtoList(){
-		const {amount,weight,selected,rate}=this.state;
+	addtoList() {
+		const {
+			amount,
+			weight,
+			selected,
+			rate
+		} = this.state;
 		this.setState((prevState) => {
-			prevState.pList.push('listItem',{
+			prevState.pList.push('listItem', {
 				amount: amount,
-				weight:weight,
-				selected:selected,
-				rate:rate
-			}
-			);
-			return prevState; 
-			})
+				weight: weight,
+				selected: selected,
+				rate: rate
+			});
+			prevState.dataSource = ds.cloneWithRows(prevState.pList);
+			return prevState;
+		});
 	}
 	googleSheets() {
 		var formData = new FormData();
@@ -133,12 +136,12 @@ export default class MainScreen extends Component {
 		}
 		return hour.toString() + ':' + minutes.toString() + ' ' + TimeType.toString();
 	}
-	showList(){
-		
+	showList() {
+
 	}
 
 	validator() {
-		const {
+		let {
 			amount,
 			weight,
 			rate
@@ -146,30 +149,27 @@ export default class MainScreen extends Component {
 
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseInt(weight) * rate;
-			this.setState({
-				amount: "" + result + " Rs."
-			})
+			amount = "" + result
 		} else if (weight == '' && amount != '' && rate != '') {
 			let result = parseInt(amount) / rate;
-			this.setState({
-				weight: "" + result + " kgs."
-			})
+			weight = "" + result
 		} else if (rate == '' && amount != '' && weight != '') {
 			let result = parseInt(amount) / weight;
-			this.setState({
-				rate: "" + result + " Rs."
-			})
+			rate = "" + result
 		} else {
 			return Alert.alert('Error', 'Please check the data');
 		}
-		this.addtoList();
-
+		this.setState({
+			amount,
+			weight,
+			rate
+		}, () => this.addtoList());
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
 			// Sign-out successful.
 		}, function(error) {
-			Alert.alert('Error','Temporary Error, 400');
+			Alert.alert('Error', 'Temporary Error, 400');
 		});
 	}
 	renderSelected(item) {
@@ -231,16 +231,12 @@ export default class MainScreen extends Component {
 				
 			</CardItem>
 			<CardItem>
-			<ListView
- 
- 				dataSource={this.state.dataSource}
-
- 				renderSeparator= {this.ListViewItemSeparator}
- 				renderRow={(rowData) => <Text style={styles.rowViewContainer}>{rowData}</Text>
-		   }
-
-/>
-				</CardItem>
+				<ListView
+					dataSource={this.state.dataSource}
+					renderSeparator= {this.ListViewItemSeparator}
+					renderRow={(rowData) => <Text>{JSON.stringify(rowData)}</Text>}
+				/>
+			</CardItem>
 		</Card>;
 	}
 	render() {
@@ -272,7 +268,7 @@ export default class MainScreen extends Component {
 				}>
 					<Autocomplete
 						data={data}
-						onChangeText={text => this.setState({ text })}
+						onChangeText={text => text && this.setState({ text })}
 						renderItem={item => (
 							<TouchableOpacity onPress={() => this.setState({ text: item, selected: item })}>
 								<Text style={style.inputTextStyle}>{item}</Text>
