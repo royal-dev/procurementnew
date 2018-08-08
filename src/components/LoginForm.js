@@ -15,8 +15,7 @@ import {
 	AsyncStorage
 } from 'react-native';
 import * as firebase from 'firebase';
-import {Button} from 'native-base';
-import { Autocomplete } from 'react-native-autocomplete-input';
+
 export default class LoginForm extends Component {
 	state = {
 		username: '',
@@ -46,9 +45,7 @@ export default class LoginForm extends Component {
 			}
 		});
 	}
-	
 	onPressSignIn() {
-	
 		const {
 			username,
 			password
@@ -94,23 +91,26 @@ export default class LoginForm extends Component {
         <Text style={styles.TextStyle}>Procurement Service</Text>
         </View>
         <View style={styles.loginContainer}>
-		  <TextInput placeholder='email address' 
-		  value={this.state.username} 
-		  style={styles.TextInputStyle}
-		  autoCorrect={false}
-		  onChangeText={(username)=> this.setState({username})}
-		  
-		  onSubmitEditing={()=> this.passwordInput.focus()}/>
-		  <TextInput placeholder='password' 
-		  value={this.state.password} 
-		  style={styles.TextInputStyle}
-		  secureTextEntry
-		  ref={(input)=> this.passwordInput=input}
-		  onChangeText={(password)=> this.setState({password})}
-		  />
-		  <Button block info onPress={this.onPressSignIn()}><Text>Login</Text></Button>
+              <TextInput placeholder="username"
+              placeholderTextColor='#FFF'
+              autoCapitalize="none"
+              autoCorrect={false}
+              onSubmitEditing={()=>this.passwordInput.focus()}
+              style={styles.TextInputStyle}
+              value={this.state.username}
+              onChangeText={username => this.setState({username})}/>
+              <TextInput 
+              placeholder="password"
+              placeholderTextColor='#FFF'
+              secureTextEntry
+              ref={(input)=> this.passwordInput=input}
+              style={styles.TextInputStyle}
+              value={this.state.password}
+              onChangeText={password => this.setState({password})}/>
+              <TouchableOpacity style={styles.ButtonStyle} onPress={()=> this.onPressSignIn()}>
+              <Text style={styles.ButtonTextStyle}>Log In</Text></TouchableOpacity>
             </View>
-      </KeyboardAvoidingView>
+      </KeyboardAvoidingView>;
 		}
 	}
 }
