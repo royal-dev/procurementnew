@@ -10,6 +10,7 @@ import {
 	ListView,
 	View
 } from 'react-native';
+import ListShow from './ListShow';
 
 import Autocomplete from 'react-native-autocomplete-input';
 import allData from './data';
@@ -75,7 +76,7 @@ export default class MainScreen extends Component {
 			rate
 		} = this.state;
 		this.setState((prevState) => {
-			prevState.pList.push('listItem', {
+			prevState.pList.push(selected, {
 				amount: amount,
 				weight: weight,
 				selected: selected,
@@ -84,6 +85,7 @@ export default class MainScreen extends Component {
 			prevState.dataSource = ds.cloneWithRows(prevState.pList);
 			return prevState;
 		});
+		ToastAndroid.show('Updated',ToastAndroid.SHORT)
 	}
 	googleSheets() {
 		var formData = new FormData();
@@ -138,6 +140,7 @@ export default class MainScreen extends Component {
 	}
 	showList() {
 
+		return<ListShow/>
 	}
 
 	validator() {
@@ -149,12 +152,15 @@ export default class MainScreen extends Component {
 
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseInt(weight) * rate;
+			result=Math.round(result,2);
 			amount = "" + result
 		} else if (weight == '' && amount != '' && rate != '') {
 			let result = parseInt(amount) / rate;
+			result=Math.round(result,2);
 			weight = "" + result
 		} else if (rate == '' && amount != '' && weight != '') {
 			let result = parseInt(amount) / weight;
+			result=Math.round(result,2);
 			rate = "" + result
 		} else {
 			return Alert.alert('Error', 'Please check the data');
@@ -173,6 +179,12 @@ export default class MainScreen extends Component {
 		});
 	}
 	renderSelected(item) {
+		const {
+			amount,
+			weight,
+			selected,
+			rate
+		} = this.state;
 		if (!!!item) {
 			return null;
 		}
@@ -231,11 +243,21 @@ export default class MainScreen extends Component {
 				
 			</CardItem>
 			<CardItem>
+			<Content style={
+					{
+						padding: 10,
+						borderTopWidth: 1,
+						borderColor: "#dadada"
+					}
+			}> 
+			<Button block danger onPress={() => this.showList()}>
+						<Text>Generate Report</Text>
+					</Button>
 				<ListView
 					dataSource={this.state.dataSource}
 					renderSeparator= {this.ListViewItemSeparator}
-					renderRow={(rowData) => <Text>{JSON.stringify(rowData)}</Text>}
-				/>
+					renderRow={(rowData) => <Text style={style.listText}>{selected+'Weight:'+weight+'kgs'}</Text>}
+				/></Content>
 			</CardItem>
 		</Card>;
 	}
@@ -283,6 +305,9 @@ export default class MainScreen extends Component {
 
 }
 const style = StyleSheet.create({
+	listText:{
+		fontSize:14
+	},
 	timeStampStyle: {
 		fontSize: 16
 	},
