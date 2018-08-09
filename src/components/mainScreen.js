@@ -33,8 +33,6 @@ import {
 	Subtitle
 } from 'native-base';
 
-
-
 import * as firebase from 'firebase';
 export default class MainScreen extends Component {
 
@@ -51,11 +49,11 @@ export default class MainScreen extends Component {
 			rate: '',
 			timestamp: '',
 			pList: [],
-			vList:false
+			vList: false
 		};
-		
+
 	}
-	
+
 	addtoList() {
 		const {
 			amount,
@@ -64,17 +62,16 @@ export default class MainScreen extends Component {
 			rate
 		} = this.state;
 		this.setState((prevState) => {
-			prevState.pList.push(selected, {
+			prevState.pList.push({
 				amount: amount,
 				weight: weight,
 				selected: selected,
 				rate: rate,
-				'UserID':firebase.auth().currentUser.email
+				'UserID': firebase.auth().currentUser.email
 			});
-			prevState.dataSource = ds.cloneWithRows(prevState.pList);
 			return prevState;
 		});
-		ToastAndroid.show('Updated',ToastAndroid.SHORT)
+		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
 	googleSheets() {
 		var formData = new FormData();
@@ -141,15 +138,15 @@ export default class MainScreen extends Component {
 
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseInt(weight) * rate;
-			result=Math.round(result,2);
+			result = result.toFixed(2);
 			amount = "" + result
 		} else if (weight == '' && amount != '' && rate != '') {
 			let result = parseInt(amount) / rate;
-			result=Math.round(result,2);
+			result = result.toFixed(2);
 			weight = "" + result
 		} else if (rate == '' && amount != '' && weight != '') {
 			let result = parseInt(amount) / weight;
-			result=Math.round(result,2);
+			result = result.toFixed(2);
 			rate = "" + result
 		} else {
 			return Alert.alert('Error', 'Please check the data');
@@ -248,20 +245,20 @@ export default class MainScreen extends Component {
 		</Card>;
 	}
 	render() {
-		if(this.state.vList){
-		 return	<ListShow list={this.state.pList}/>;}
-		else{
-		
-		const {
-			text,
-			selected
-		} = this.state;
-		let data = [];
-		if (text.length) {
-			data = allData.filter((e) => e.label.toLowerCase().startsWith(text.toLowerCase())).map((e) => e.label);
-		}
-		return (
-			<Container>
+			if (this.state.vList) {
+				return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})}/>;
+		} else {
+
+			const {
+				text,
+				selected
+			} = this.state;
+			let data = [];
+			if (text.length) {
+				data = allData.filter((e) => e.label.toLowerCase().startsWith(text.toLowerCase())).map((e) => e.label);
+			}
+			return (
+				<Container>
 				<Header>
 					<Body>
 						<Title>Procurement Service</Title>
@@ -290,14 +287,14 @@ export default class MainScreen extends Component {
 					{this.renderSelected(selected)}
 				</Content>
 			</Container>
-		);
+			);
+		}
 	}
-}
 
 }
 const style = StyleSheet.create({
-	listText:{
-		fontSize:14
+	listText: {
+		fontSize: 14
 	},
 	timeStampStyle: {
 		fontSize: 16
