@@ -33,9 +33,7 @@ import {
 	Subtitle
 } from 'native-base';
 
-const ds = new ListView.DataSource({
-	rowHasChanged: (r1, r2) => r1 !== r2
-});
+
 
 import * as firebase from 'firebase';
 export default class MainScreen extends Component {
@@ -52,22 +50,12 @@ export default class MainScreen extends Component {
 			weight: '',
 			rate: '',
 			timestamp: '',
-			pList: []
+			pList: [],
+			vList:false
 		};
-		this.state.dataSource = ds.cloneWithRows(this.state.pList);
+		
 	}
-	ListViewItemSeparator = () => {
-		return (
-			<View
-			style={{
-			  height: .5,
-			  width: "100%",
-			  backgroundColor: "#000",
-			}}
-		  />
-		);
-	}
-
+	
 	addtoList() {
 		const {
 			amount,
@@ -80,7 +68,8 @@ export default class MainScreen extends Component {
 				amount: amount,
 				weight: weight,
 				selected: selected,
-				rate: rate
+				rate: rate,
+				'UserID':firebase.auth().currentUser.email
 			});
 			prevState.dataSource = ds.cloneWithRows(prevState.pList);
 			return prevState;
@@ -183,7 +172,8 @@ export default class MainScreen extends Component {
 			amount,
 			weight,
 			selected,
-			rate
+			rate,
+			vList
 		} = this.state;
 		if (!!!item) {
 			return null;
@@ -210,7 +200,7 @@ export default class MainScreen extends Component {
 						<Icon type="FontAwesome" name="money" />
 						<Input
 							onChangeText={amount => this.setState({ amount })}
-							value={this.state.amount}
+							value={amount}
 							keyboardType="numeric"
 							placeholder="Amount" />
 					</Item>
@@ -218,14 +208,14 @@ export default class MainScreen extends Component {
 						<Icon name="ios-pricetag" />
 						<Input
 							onChangeText={rate => this.setState({ rate })}
-							value={this.state.rate}
+							value={rate}
 							keyboardType="numeric" placeholder="Rate" />
 					</Item>
 					<Item>
 						<Icon type="MaterialCommunityIcons" name="weight-kilogram" />
 						<Input
 							onChangeText={weight => this.setState({ weight })}
-							value={this.state.weight}
+							value={weight}
 							keyboardType="numeric" placeholder="Weight" />
 					</Item>
 				
@@ -250,18 +240,18 @@ export default class MainScreen extends Component {
 						borderColor: "#dadada"
 					}
 			}> 
-			<Button block danger onPress={() => this.showList()}>
+			<Button block danger onPress={()=>this.setState({vList:true})}>
 						<Text>Generate Report</Text>
 					</Button>
-				<ListView
-					dataSource={this.state.dataSource}
-					renderSeparator= {this.ListViewItemSeparator}
-					renderRow={(rowData) => <Text style={style.listText}>{selected+'Weight:'+weight+'kgs'}</Text>}
-				/></Content>
+			</Content>
 			</CardItem>
 		</Card>;
 	}
 	render() {
+		if(this.state.vList){
+		 return	<ListShow list={this.state.pList}/>;}
+		else{
+		
 		const {
 			text,
 			selected
@@ -302,6 +292,7 @@ export default class MainScreen extends Component {
 			</Container>
 		);
 	}
+}
 
 }
 const style = StyleSheet.create({
