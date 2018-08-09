@@ -71,59 +71,11 @@ export default class MainScreen extends Component {
 			});
 			return prevState;
 		});
+		console.log(this.state.pList);
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
-	googleSheets() {
-		var formData = new FormData();
-		formData.append("values", JSON.stringify([
-			{
-				"ItemName": this.state.selected,
-				"Weight": this.state.weight,
-				"Rate": this.state.rate,
-				"Amount": this.state.amount,
-				"UserID": firebase.auth().currentUser.email
-			}
-		]))
-		fetch('https://script.google.com/macros/s/AKfycbyaudxHGu0wkGqPmQRHkGBEHoTJI6-jAPFtERIihearDxsKCEc/exec', {
-			mode: 'no-cors',
-			method: 'post',
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		}).then(function(response) {
-			console.log(response.status)
-			console.log("response");
-			console.log(response)
-		}).catch(console.log);
-		firebase.database().ref('procurements/').remove();
-	}
 
-	getTime() {
-		var date, TimeType, hour, minutes, seconds, fullTime;
-		date = new Date();
-		hour = date.getHours();
-		if (hour <= 11) {
-			TimeType = 'AM';
-		} else {
-			TimeType = 'PM';
-		}
-		if (hour > 12) {
-			hour = hour - 12;
-		}
-		if (hour == 0) {
-			hour = 12;
-		}
-		minutes = date.getMinutes();
-		if (minutes < 10) {
-			minutes = '0' + minutes.toString();
-		}
-		seconds = date.getSeconds();
-		if (seconds < 10) {
-			seconds = '0' + seconds.toString();
-		}
-		return hour.toString() + ':' + minutes.toString() + ' ' + TimeType.toString();
-	}
+
 	showList() {
 
 		return <ListShow/>;
@@ -139,7 +91,7 @@ export default class MainScreen extends Component {
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseInt(weight) * rate;
 			result = result.toFixed(2);
-			amount = "" + result
+			amount = "" + result 
 		} else if (weight == '' && amount != '' && rate != '') {
 			let result = parseInt(amount) / rate;
 			result = result.toFixed(2);

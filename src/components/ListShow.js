@@ -137,7 +137,7 @@ export default class DynamicList extends Component {
 						</Button>
 					</Left>
 					<Body>
-						<Title>List</Title>
+						<Title>Procurement List</Title>
 					</Body>
          		 <Right />
 				</Header>
@@ -147,12 +147,12 @@ export default class DynamicList extends Component {
 					}
 				}>
 					<View style={styles.addPanel}>
-						<TouchableOpacity
-							style={styles.addButton}
-							onPress={()=> this.googleSheets()}
-						>
+					<Text style={{paddingBottom:20}}>Following list is editabe, you can use 'Add to Sheets' for final submission.</Text>
+					
+						<Button block danger 
+							onPress={()=> this.googleSheets()}>
 							<Text style={styles.addButtonText}>Add to Sheets</Text>
-						</TouchableOpacity>
+						</Button> 
 					</View>
 					<ListView
 						refreshControl={
@@ -213,7 +213,7 @@ export default class DynamicList extends Component {
 
                     <View style={styles.contact}>
                         <Text style={[styles.name]}>{rowData.selected}</Text>
-                        <Text style={styles.phone}>Weight : {rowData.weight}</Text>
+                        <Text style={styles.phone}>Weight : {rowData.weight} kgs</Text>
                     </View>
                     <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.selected)}>
                         <Icon name='md-remove-circle' style={styles.deleteIcon}/>
@@ -238,7 +238,6 @@ export default class DynamicList extends Component {
 			console.log("response");
 			console.log(response)
 		}).catch(console.log);
-		firebase.database().ref('procurements/').remove();
 	}
 
 	componentWillUpdate(nexProps, nexState) {
@@ -252,9 +251,15 @@ export default class DynamicList extends Component {
 	}
 
 	_deleteItem(id) {
+		data=this.props.list
 		this.setState({
 			rowToDelete: id
 		});
+		data.forEach((element, index)=>{
+			console.log(index);
+		}
+
+		);
 	}
 
 	_onAfterRemovingElement() {
@@ -279,8 +284,8 @@ const styles = StyleSheet.create({
 	},
 
 	addPanel: {
-		paddingTop: 40,
-		paddingBottom: 20,
+		paddingTop: 10,
+		paddingBottom: 10,
 		backgroundColor: '#F9F9F9'
 	},
 	addButton: {
@@ -314,11 +319,11 @@ const styles = StyleSheet.create({
 
 	name: {
 		color: '#212121',
-		fontSize: 14
+		fontSize: 18
 	},
 	phone: {
 		color: '#212121',
-		fontSize: 10
+		fontSize: 12
 	},
 	contact: {
 		width: window.width - 100,
