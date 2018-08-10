@@ -175,34 +175,6 @@ export default class DynamicList extends Component {
 			</Container>
 		);
 	}
-/* 
-			<View style={styles.container}>
-                <View style={styles.addPanel}>
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={()=> this.googleSheets()}
-                    >
-                        <Text style={styles.addButtonText}>Add to Sheets</Text>
-                    </TouchableOpacity>
-                </View>
-                <ListView
-                    refreshControl={
-                      <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._loadData.bind(this, true)}
-                        tintColor="#00AEC7"
-                        title="Loading..."
-                        titleColor="#00AEC7"
-                        colors={['#FFF', '#FFF', '#FFF']}
-                        progressBackgroundColor="#00AEC7"
-
-                      />
-                    }
-                    enableEmptySections={true}
-                    dataSource={this.state.dataSource}
-                    renderRow={this._renderRow.bind(this)}
-                />
-            </View> */
 	_renderRow(rowData, sectionID, rowID) {
 		return (
 			<DynamicListRow
@@ -251,17 +223,11 @@ export default class DynamicList extends Component {
 	}
 
 	_deleteItem(id) {
-		
 		this.setState({
 			rowToDelete: id
 		});
-		this.props.delete(id,rowToDelete);
+		this.props.delete(id);
 	}
-	
-	
-
-		
-
 
 	_onAfterRemovingElement() {
 		this.setState({
