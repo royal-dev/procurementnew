@@ -251,16 +251,15 @@ export default class DynamicList extends Component {
 	}
 
 	_deleteItem(id) {
-		data=this.props.list
+
 		this.setState({
 			rowToDelete: id
 		});
-		data.forEach((element, index)=>{
-			console.log(index);
+	
 		}
 
-		);
-	}
+		
+
 
 	_onAfterRemovingElement() {
 		this.setState({
