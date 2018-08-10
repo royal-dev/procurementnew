@@ -74,7 +74,7 @@ export default class MainScreen extends Component {
 		console.log(this.state.pList);
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
-	deleteListData(dataname){
+	deleteListData(dataname,rowToDelete){
 		if (nexState.rowToDelete !== null) {
 			this.pList = this.pList.filter((dataname) => {
 				if (dataname.selected !== nexState.rowToDelete) {
@@ -208,7 +208,7 @@ export default class MainScreen extends Component {
 	}
 	render() {
 			if (this.state.vList) {
-				return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={()=>this.deleteListData(dataname)}/>;
+				return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={()=>this.deleteListData(dataname,rowToDelete)}/>;
 		} else {
 
 			const {

@@ -255,7 +255,7 @@ export default class DynamicList extends Component {
 		this.setState({
 			rowToDelete: id
 		});
-		this.props.delete(id);
+		this.props.delete(id,rowToDelete);
 	}
 	
 	
