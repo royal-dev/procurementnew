@@ -25,6 +25,7 @@ export default class LoginForm extends Component {
 		authUser: null
 	};
 	componentDidMount() {
+		
 		//Get saved user if already there
 		AsyncStorage.getItem('authUser').then(v => (v ? this.setState({
 			authUser: JSON.parse(v)
@@ -45,6 +46,7 @@ export default class LoginForm extends Component {
 			}
 		});
 	}
+
 	onPressSignIn() {
 		const {
 			username,

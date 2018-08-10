@@ -71,7 +71,11 @@ export default class MainScreen extends Component {
 			});
 			return prevState;
 		});
-		console.log(this.state.pList);
+		this.setState({
+			amount:'',
+			weight:'',
+			rate:''
+		});
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
 	deleteListData(rowToDelete) {
@@ -98,15 +102,15 @@ export default class MainScreen extends Component {
 		} = this.state;
 
 		if (amount == '' && weight != '' && rate != '') {
-			let result = parseInt(weight) * rate;
+			let result = parseFloat(weight) * rate;
 			result = result.toFixed(2);
 			amount = "" + result
 		} else if (weight == '' && amount != '' && rate != '') {
-			let result = parseInt(amount) / rate;
+			let result = parseFloat(amount) / rate;
 			result = result.toFixed(2);
 			weight = "" + result
 		} else if (rate == '' && amount != '' && weight != '') {
-			let result = parseInt(amount) / weight;
+			let result = parseFloat(amount) / weight;
 			result = result.toFixed(2);
 			rate = "" + result
 		} else {
@@ -116,7 +120,8 @@ export default class MainScreen extends Component {
 			amount,
 			weight,
 			rate
-		}, () => this.addtoList());
+		},
+		() => this.addtoList());
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {

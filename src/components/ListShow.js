@@ -10,7 +10,9 @@ import {
 	InteractionManager,
 	RefreshControl,
 	Animated,
-	Dimensions
+	Dimensions,
+	ToastAndroid,
+	BackHandler
 } from 'react-native';
 import {
 	Container,
@@ -89,15 +91,24 @@ export default class DynamicList extends Component {
 				rowHasChanged: (row1, row2) => true
 			}),
 			refreshing: false,
-			rowToDelete: null
+			rowToDelete: null,
+			sheet:true
 		};
+	}
+	componentWillMount(){
+		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 	}
 
 	componentDidMount() {
+		
 		InteractionManager.runAfterInteractions(() => {
 			this._loadData()
 		});
 	}
+	handleBackPress = () => {
+		this.props.back()
+		return true;
+	  }
 
 	_loadData(refresh) {
 		refresh && this.setState({
@@ -125,7 +136,9 @@ export default class DynamicList extends Component {
 	}
 
 	render() {
+		if(this.state.sheet){
 		return (
+			
 			<Container>
 				<Header>
 					<Left>
@@ -145,7 +158,7 @@ export default class DynamicList extends Component {
 				}>
 					<View style={styles.addPanel}>
 					<Text style={{paddingBottom:20}}>Following list is editabe, you can use 'Add to Sheets' for final submission.</Text>
-					
+				
 						<Button block danger 
 							onPress={()=> this.googleSheets()}>
 							<Text style={styles.addButtonText}>Add to Sheets</Text>
@@ -171,7 +184,40 @@ export default class DynamicList extends Component {
 				</Content>
 			</Container>
 		);
+	}else{
+	
+	return (
+	<Container>
+		<Header>
+			<Left>
+				<Button transparent onPress={()=>this.props.back()}>
+					<Icon name='arrow-back' />
+				</Button>
+			</Left>
+			<Body>
+				<Title>Procurement List</Title>
+			</Body>
+		  <Right />
+		</Header>
+		<Content style={
+			{
+				padding: 10
+			}
+		}>
+			<View style={styles.addPanel}>
+			<Text style={{paddingBottom:20}}>Your data has been added to the database, Please start a new session.</Text>
+		
+				<Button disabled>
+					<Text style={styles.addButtonText}>Add to Sheets</Text>
+				</Button> 
+			</View>
+			</Content>
+			</Container>
+		);
+		}
+
 	}
+
 	_renderRow(rowData, sectionID, rowID) {
 		return (
 			<DynamicListRow
@@ -183,6 +229,8 @@ export default class DynamicList extends Component {
                     <View style={styles.contact}>
                         <Text style={[styles.name]}>{rowData.selected}</Text>
                         <Text style={styles.phone}>Weight : {rowData.weight} kgs</Text>
+						<Text style={styles.phone}>Amount: {rowData.amount} Rs. </Text>
+						<Text style={styles.phone}>Rate: {rowData.rate} Rs.</Text>
                     </View>
                     <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.selected)}>
                         <Icon name='md-remove-circle' style={styles.deleteIcon}/>
@@ -203,10 +251,9 @@ export default class DynamicList extends Component {
 			},
 			body: formData
 		}).then(function(response) {
-			console.log(response.status)
-			console.log("response");
-			console.log(response)
+			ToastAndroid.show('Updated',ToastAndroid.SHORT)
 		}).catch(console.log);
+		this.setState({sheet:false});
 	}
 
 	componentWillUpdate(nexProps, nexState) {
@@ -267,7 +314,7 @@ const styles = StyleSheet.create({
 
 	rowStyle: {
 		backgroundColor: '#FFF',
-		paddingVertical: 5,
+		paddingVertical: 2,
 		paddingHorizontal: 10,
 		borderBottomColor: '#ccc',
 		borderBottomWidth: 1,
@@ -282,12 +329,13 @@ const styles = StyleSheet.create({
 	},
 
 	name: {
+		fontWeight:"600",
 		color: '#212121',
-		fontSize: 18
+		fontSize: 14
 	},
 	phone: {
 		color: '#212121',
-		fontSize: 12
+		fontSize: 10
 	},
 	contact: {
 		width: window.width - 100,
@@ -300,7 +348,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 10
 	},
 	deleteWrapper: {
-		paddingVertical: 10,
+		paddingVertical: 2,
 		width: 80,
 		alignSelf: 'flex-end'
 	},
