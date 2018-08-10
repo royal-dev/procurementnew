@@ -18,23 +18,20 @@ import {
 	Title,
 	Content,
 	Button,
-	Item,
-	Input,
 	Left,
 	Right,
 	Body,
 	Icon,
-	Text,
-	Form,
-	Subtitle
+	Text
+	
 } from 'native-base';
-import * as firebase from 'firebase';
+
 
 const window = Dimensions.get('window');
 
 class DynamicListRow extends Component {
 
-	// these values will need to be fixed either within the component or sent through props
+	
 	_defaultHeightValue = 60;
 	_defaultTransition = 500;
 
