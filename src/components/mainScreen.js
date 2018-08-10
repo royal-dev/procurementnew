@@ -74,6 +74,12 @@ export default class MainScreen extends Component {
 		console.log(this.state.pList);
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
+	deleteListData(dataname){
+		newpList=pList.filter(pList,dataname);
+
+		console.log(newpList);
+
+	}
 
 
 	showList() {
@@ -198,7 +204,7 @@ export default class MainScreen extends Component {
 	}
 	render() {
 			if (this.state.vList) {
-				return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})}/>;
+				return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={(dataname)=>this.deleteListData(dataname)}/>;
 		} else {
 
 			const {

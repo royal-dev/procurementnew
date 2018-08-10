@@ -251,12 +251,14 @@ export default class DynamicList extends Component {
 	}
 
 	_deleteItem(id) {
-
+		
 		this.setState({
 			rowToDelete: id
 		});
+		this.props.delete(id);
+	}
 	
-		}
+	
 
 		
 
