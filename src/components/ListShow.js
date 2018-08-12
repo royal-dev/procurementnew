@@ -186,7 +186,7 @@ export default class DynamicList extends Component {
 				</Content>
 				<Footer>
          		 <FooterTab>
-            		<Button badge vertical onPress={this.props.back}>
+            		<Button vertical onPress={this.props.back}>
               		<Icon name="apps" />
               		<Text>Main</Text>
             		</Button>
