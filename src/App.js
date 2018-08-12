@@ -15,7 +15,10 @@ export default class App extends Component {
 			storageBucket: 'procure-b3770.appspot.com',
 			messagingSenderId: '1065488977040'
 		}
-		firebase.initializeApp(firebaseConfig);
+		if (!firebase.apps.length) {
+			firebase.initializeApp(firebaseConfig);
+		}
+		
 	}
 
 	render() {

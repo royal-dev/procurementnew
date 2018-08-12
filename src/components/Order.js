@@ -29,6 +29,7 @@ import {
 	Footer,
 	Badge
 } from 'native-base';
+import firebase from 'firebase';
 
 const window = Dimensions.get('window');
 
@@ -101,22 +102,7 @@ export default class Order extends Component{
             orderData:[]
 		};
     }
-    googleSheetsgetData(){
-        var formData = new formData();
-        this.setState({orderData:formData.get()});
-        fetch('https://script.google.com/macros/s/AKfycbx-Ii0Vq2d8JPFYLRuVen7XD6SDVGYB4gvckJCMIltbwKI7VnxJ/exec', {
-			mode: 'no-cors',
-			method: 'get',
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		}).then(function(response) {
-			
-		}).catch(console.log);
-        
-        
-    }
+  
 	componentDidMount() {
 		
 		InteractionManager.runAfterInteractions(() => {
@@ -130,7 +116,7 @@ export default class Order extends Component{
 		});
 
 		this.dataLoadSuccess({
-			data: this.props.list
+			data: this.state.orderData
 		});
 	}
 
@@ -154,13 +140,20 @@ export default class Order extends Component{
                 <View style={styles.rowStyle}>
 
                     <View style={styles.contact}>
-                        <Text style={[styles.name]}>{rowData.selected}</Text>
-                        <Text style={styles.phone}>Order : {rowData.weight} kgs</Text>
+                        <Text style={[styles.name]}>{rowData.orderid}</Text>
+                        <Text style={styles.phone}>Order : {rowData.details} </Text>
                     </View>
 
                 </View>
             </DynamicListRow>
 		);
+	}
+	readUserData() {
+		let {orderData}=this.state;
+		firebase.database().ref('Orders/').on('value', function (snapshot) {
+			this.setState({orderData:JSON.stringify(snapshot.val())});
+			console.log(snapshot.val())
+		});
 	}
     render(){
         return(
