@@ -28,9 +28,7 @@ import {
 	FooterTab,
 	Footer,
 	Badge
-	
 } from 'native-base';
-
 
 const window = Dimensions.get('window');
 
@@ -88,9 +86,9 @@ class DynamicListRow extends Component {
 	}
 }
 
-export default class DynamicList extends Component {
 
-	constructor(props) {
+export default class Order extends Component{
+    constructor(props) {
 		super(props);
 		this.state = {
 			loading: true,
@@ -102,8 +100,6 @@ export default class DynamicList extends Component {
 			sheet:true
 		};
 	}
-	
-
 	componentDidMount() {
 		
 		InteractionManager.runAfterInteractions(() => {
@@ -134,13 +130,26 @@ export default class DynamicList extends Component {
 			dataSource: ds
 		});
 		console.log(this._data);
-	}
-
-	render() {
-		if(this.state.sheet){
+    }
+    _renderRow(rowData, sectionID, rowID) {
 		return (
-			
-			<Container>
+			<DynamicListRow>
+                <View style={styles.rowStyle}>
+
+                    <View style={styles.contact}>
+                        <Text style={[styles.name]}>{rowData.selected}</Text>
+                        <Text style={styles.phone}>Weight : {rowData.weight} kgs</Text>
+						<Text style={styles.phone}>Amount: {rowData.amount} Rs. </Text>
+						<Text style={styles.phone}>Rate: {rowData.rate} Rs.</Text>
+                    </View>
+
+                </View>
+            </DynamicListRow>
+		);
+	}
+    render(){
+        return(
+            <Container>
 				<Header>
 					<Left>
 						<Button transparent onPress={()=>this.props.back()}>
@@ -148,25 +157,15 @@ export default class DynamicList extends Component {
 						</Button>
 					</Left>
 					<Body>
-						<Title>Procurement List</Title>
+						<Title>Orders</Title>
 					</Body>
          		 <Right />
 				</Header>
-				<Content style={
-					{
-						padding: 10
-					}
-				}>
-					<View style={styles.addPanel}>
-					<Text style={{paddingBottom:5}}>Following list is editabe, you can use 'Add to Sheets' for final submission.</Text>
-					<Right><Text style={{paddingBottom:20, fontSize:22}}>Total: Rs. {this.props.total}</Text>
-				</Right>
-						<Button block danger 
-							onPress={()=> this.googleSheets()}>
-							<Text style={styles.addButtonText}>Add to Sheets</Text>
-						</Button> 
+                <View style={styles.addPanel}>
+					<Text style={{paddingBottom:5}}>Procurement Orders</Text>
+					
 					</View>
-					<ListView
+                <ListView
 						refreshControl={
 							<RefreshControl
 							refreshing={this.state.refreshing}
@@ -183,8 +182,7 @@ export default class DynamicList extends Component {
 						dataSource={this.state.dataSource}
 						renderRow={this._renderRow.bind(this)}
 					/>
-				</Content>
-				<Footer>
+            <Footer>
          		 <FooterTab>
             		<Button badge vertical onPress={this.props.back}>
               		<Icon name="apps" />
@@ -197,107 +195,10 @@ export default class DynamicList extends Component {
            			</Button>
 					</FooterTab>
        				</Footer>
-			</Container>
-		);
-	}else{
-	
-	return (
-	<Container>
-		<Header>
-			<Left>
-				<Button transparent onPress={()=>this.props.back()}>
-					<Icon name='arrow-back' />
-				</Button>
-			</Left>
-			<Body>
-				<Title>Procurement List</Title>
-			</Body>
-		  <Right />
-		</Header>
-		<Content style={
-			{
-				padding: 10
-			}
-		}>
-			<View style={styles.addPanel}>
-			<Text style={{paddingBottom:20}}>Your data has been added to the database, Please start a new session.</Text>
-		
-				<Button disabled>
-					<Text style={styles.addButtonText}>Add to Sheets</Text>
-				</Button> 
-			</View>
-			</Content>
-			</Container>
-		);
-		}
-
-	}
-
-	_renderRow(rowData, sectionID, rowID) {
-		return (
-			<DynamicListRow
-                remove={rowData.selected === this.state.rowToDelete}
-                onRemoving={this._onAfterRemovingElement.bind(this)}
-            >
-                <View style={styles.rowStyle}>
-
-                    <View style={styles.contact}>
-                        <Text style={[styles.name]}>{rowData.selected}</Text>
-                        <Text style={styles.phone}>Weight : {rowData.weight} kgs</Text>
-						<Text style={styles.phone}>Amount: {rowData.amount} Rs. </Text>
-						<Text style={styles.phone}>Rate: {rowData.rate} Rs.</Text>
-                    </View>
-                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.selected,rowData.amount)}>
-                        <Icon name='md-remove-circle' style={styles.deleteIcon}/>
-                    </TouchableOpacity>
-                </View>
-            </DynamicListRow>
-		);
-	}
-
-	googleSheets() {
-		var formData = new FormData();
-		formData.append("values", JSON.stringify(this._data))
-		fetch('https://script.google.com/macros/s/AKfycbyaudxHGu0wkGqPmQRHkGBEHoTJI6-jAPFtERIihearDxsKCEc/exec', {
-			mode: 'no-cors',
-			method: 'post',
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		}).then(function(response) {
-			ToastAndroid.show('Updated',ToastAndroid.SHORT)
-		}).catch(console.log);
-		this.setState({sheet:false});
-	}
-
-	componentWillUpdate(nexProps, nexState) {
-		if (nexState.rowToDelete !== null) {
-			this._data = this._data.filter((item) => {
-				if (item.selected !== nexState.rowToDelete) {
-					return item;
-				}
-			});
-		}
-	}
-
-	_deleteItem(id,rowData) {
-		this.setState({
-			rowToDelete: id
-		});
-		this.props.delete(id,rowData);
-
-	}
-
-	_onAfterRemovingElement() {
-		this.setState({
-			rowToDelete: null,
-			dataSource: this.state.dataSource.cloneWithRows(this._data)
-		});
-	}
-
+            </Container>);
+                }
+            
 }
-
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,

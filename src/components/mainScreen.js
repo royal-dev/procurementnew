@@ -6,12 +6,10 @@ import {
 	StyleSheet,
 	Image,
 	Alert,
-	ToastAndroid,
-	ListView,
-	View
+	ToastAndroid
 } from 'react-native';
 import ListShow from './ListShow';
-
+import Order from './Order';
 import Autocomplete from 'react-native-autocomplete-input';
 import allData from './data';
 import {
@@ -29,7 +27,11 @@ import {
 	Body,
 	Icon,
 	Text,
-	Subtitle
+	Subtitle,
+	FooterTab,
+	Footer,
+	Badge
+
 } from 'native-base';
 
 import * as firebase from 'firebase';
@@ -49,7 +51,8 @@ export default class MainScreen extends Component {
 			marketrate: '',
 			totalAmt:0,
 			pList: [],
-			vList: false
+			vList: false,
+			orderList:false
 		};
 
 	}
@@ -149,6 +152,7 @@ export default class MainScreen extends Component {
 			Alert.alert('Error', 'Temporary Error, 400');
 		});
 	}
+	
 	renderSelected(item) {
 		
 		const {
@@ -234,10 +238,13 @@ export default class MainScreen extends Component {
 					</Button>
 			</Content>
 			</CardItem>
-		</Card>;
+		</Card>
+		;
 	}
 	render() {
-		if (this.state.vList) {
+		if(this.state.orderList){
+			return <Order back={()=> this.setState({orderList:false})} list={this.state.pList} />
+		}else if (this.state.vList) {
 			return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} total={this.state.totalAmt}/>;
 		} else {
 
@@ -278,6 +285,19 @@ export default class MainScreen extends Component {
 					/>
 					{this.renderSelected(selected)}
 				</Content>
+				<Footer>
+         		 <FooterTab>
+            		<Button vertical>
+              		<Icon name="apps" />
+              		<Text>Main</Text>
+            		</Button>
+            		<Button badge vertical onPress={()=> this.setState({orderList:true})}>
+					<Badge><Text>2</Text></Badge>
+              		<Icon type="FontAwesome" name="shopping-cart" />
+             		<Text>Orders</Text>
+           			</Button>
+					</FooterTab>
+       				</Footer>
 			</Container>
 			);
 		}
