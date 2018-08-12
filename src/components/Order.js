@@ -138,9 +138,7 @@ export default class Order extends Component{
 
                     <View style={styles.contact}>
                         <Text style={[styles.name]}>{rowData.selected}</Text>
-                        <Text style={styles.phone}>Weight : {rowData.weight} kgs</Text>
-						<Text style={styles.phone}>Amount: {rowData.amount} Rs. </Text>
-						<Text style={styles.phone}>Rate: {rowData.rate} Rs.</Text>
+                        <Text style={styles.phone}>Order : {rowData.weight} kgs</Text>
                     </View>
 
                 </View>
