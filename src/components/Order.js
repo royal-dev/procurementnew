@@ -160,7 +160,7 @@ export default class Order extends Component{
          		 <Right />
 				</Header>
                 <View style={styles.addPanel}>
-					<Text style={{paddingBottom:5, fontSize=22}}>Procurement Orders</Text>
+					<Text style={styles.HeaderText}>Procurement Orders</Text>
 					
 					</View>
                 <ListView
@@ -198,6 +198,13 @@ export default class Order extends Component{
             
 }
 const styles = StyleSheet.create({
+    HeaderText:{
+        padding:10,
+        fontWeight:"600",
+        fontSize: 22,
+        fontFamily:"sans-serif"
+
+    },
 	container: {
 		flex: 1,
 		backgroundColor: '#fff'
