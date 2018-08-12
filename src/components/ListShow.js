@@ -47,6 +47,10 @@ class DynamicListRow extends Component {
 			toValue: 1,
 			duration: this._defaultTransition
 		}).start()
+
+		BackHandler.addEventListener('hardwareBackPress', ()=>{
+			return false
+		});
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -95,9 +99,7 @@ export default class DynamicList extends Component {
 			sheet:true
 		};
 	}
-	componentWillMount(){
-		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-	}
+	
 
 	componentDidMount() {
 		
@@ -105,10 +107,6 @@ export default class DynamicList extends Component {
 			this._loadData()
 		});
 	}
-	handleBackPress = () => {
-		this.props.back()
-		return true;
-	  }
 
 	_loadData(refresh) {
 		refresh && this.setState({
@@ -157,8 +155,9 @@ export default class DynamicList extends Component {
 					}
 				}>
 					<View style={styles.addPanel}>
-					<Text style={{paddingBottom:20}}>Following list is editabe, you can use 'Add to Sheets' for final submission.</Text>
-				
+					<Text style={{paddingBottom:5}}>Following list is editabe, you can use 'Add to Sheets' for final submission.</Text>
+					<Right><Text style={{paddingBottom:20, fontSize:22}}>Total: Rs. {this.props.total}</Text>
+				</Right>
 						<Button block danger 
 							onPress={()=> this.googleSheets()}>
 							<Text style={styles.addButtonText}>Add to Sheets</Text>
@@ -232,7 +231,7 @@ export default class DynamicList extends Component {
 						<Text style={styles.phone}>Amount: {rowData.amount} Rs. </Text>
 						<Text style={styles.phone}>Rate: {rowData.rate} Rs.</Text>
                     </View>
-                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.selected)}>
+                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.selected,rowData.amount)}>
                         <Icon name='md-remove-circle' style={styles.deleteIcon}/>
                     </TouchableOpacity>
                 </View>
@@ -266,11 +265,12 @@ export default class DynamicList extends Component {
 		}
 	}
 
-	_deleteItem(id) {
+	_deleteItem(id,rowData) {
 		this.setState({
 			rowToDelete: id
 		});
-		this.props.delete(id);
+		this.props.delete(id,rowData);
+
 	}
 
 	_onAfterRemovingElement() {

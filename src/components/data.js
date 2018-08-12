@@ -1,297 +1,360 @@
 export default [{
-	"label": "Capsicum Green",
-	"image": require("../images/1.jpg")
-}, 
+	"label": "Adrak",
+	"image": require("../images/Adrak.jpg")
+},{
+	"label": "Ginger",
+	"image": require("../images/Adrak.jpg")
+},  
 {
-	"label": "Shimla Mirch",
-	"image": require("../images/1.jpg")
+	"label": "Potato bukhara",
+	"image": require("../images/Aloobukhara.jpg")
 },{
-	"label": "Carrot English",
-	"image": require("../images/2.jpg")
+	"label": "Aloo bukhara",
+	"image": require("../images/Aloobukhara.jpg")
 },{
-	"label": "Gajar",
-	"image": require("../images/2.jpg")
+	"label": "Potato Grade A",
+	"image": require("../images/AlooGradeA.jpg")
 },{
-	"label": "Cauliflower (without stem & leaves)",
-	"image": require("../images/3.jpg")
+	"label": "Aloo Grade A",
+	"image": require("../images/AlooGradeA.jpg")
 },{
-	"label": "Gobhi",
-	"image": require("../images/3.jpg")
+	"label": "Aloo Grade B",
+	"image": require("../images/AlooGradeB.jpg")
+},{
+	"label": "Potato Grade B",
+	"image": require("../images/AlooGradeB.jpg")
+},{
+	"label": "Potato Grade C",
+	"image": require("../images/AlooGradeC.jpg")
+},{
+	"label": "Aloo Grade C",
+	"image": require("../images/AlooGradeC.jpg")
+},{
+	"label": "Anaar ",
+	"image": require("../images/Anaar.jpg")
+},{
+	"label": "Pomegranate",
+	"image": require("../images/Anaar.jpg")
 },
 {
-	"label": "Chilly Big Salan (Pkoda / Achari)",
-	"image": require("../images/4.jpg")
+	"label": "Pineapple",
+	"image": require("../images/Ananas.jpg")
 },{
-	"label": "Mirch Badi",
-	"image": require("../images/4.jpg")
+	"label": "Ananas",
+	"image": require("../images/Ananas.jpg")
 },{
-	"label": "Chilly Green Fresh",
-	"image": require("../images/5.jpg")
+	"label": "Apple",
+	"image": require("../images/Apple.jpg")
 },{
-	"label": "Mirch Hari",
-	"image": require("../images/5.jpg")
-},{
-	"label": "Coconut Whole Peeled Fresh",
-	"image": require("../images/6.jpg")
-},{
-	"label": "Nariyal",
-	"image": require("../images/6.jpg")
-},{
-	"label": "Coriander Fresh- ( without roots )",
-	"image": require("../images/7.jpg")
-},{
-	"label": "Dhaniya",
-	"image": require("../images/7.jpg")
-},{
-	"label": "Cucumber ( Khera )",
-	"image": require("../images/8.jpg")
-},{
-	"label": "Khera",
-	"image": require("../images/8.jpg")
-},{
-	"label": "Kadi patta",
-	"image": require("../images/9.jpg")
-},{
-	"label": "Curry Leaf ¨/Kadi patta",
-	"image": require("../images/9.jpg")
-},{
-	"label": "Drumstick",
-	"image": require("../images/10.jpg")
-},{
-	"label": "Gourd Bottle",
-	"image": require("../images/11.jpg")
-},{
-	"label": "Lauki",
-	"image": require("../images/11.jpg")
-},{
-	"label": "Lemon",
-	"image": require("../images/12.jpg")
-},{
-	"label": "Neembu",
-	"image": require("../images/12.jpg")
-},{
-	"label": "Methi ( without roots )",
-	"image": require("../images/13.jpg")
-},{
-	"label": "Onion ( Medium size- Assorted )",
-	"image": require("../images/14.jpg")
-},{
-	"label": "Pyaaz Medium",
-	"image": require("../images/14.jpg")
-},{
-	"label": "Beans French",
-	"image": require("../images/15.jpg")
-},{
-	"label": "Beetroot",
-	"image": require("../images/16.jpg")
-},{
-	"label": "Chukandar",
-	"image": require("../images/16.jpg")
-},{
-	"label": "Cabbage",
-	"image": require("../images/17.jpg")
-},{
-	"label": "Gobhi Patta",
-	"image": require("../images/17.jpg")
-},{
-	"label": "Potato Big (Medium - Assorted )",
-	"image": require("../images/18.jpg")
-},{
-	"label": "Aaloo Bade",
-	"image": require("../images/18.jpg")
-},{
-	"label": "Potato Small (Dum Potato)",
-	"image": require("../images/19.jpg")
-},{
-	"label": "Aalo Chote",
-	"image": require("../images/19.jpg")
+	"label": "Arbi Patta",
+	"image": require("../images/ArbiPatta.jpg")
 },{
 	"label": "Arbi",
-	"image": require("../images/20.jpg")
+	"image": require("../images/Arbi.jpg")
 },{
-	"label": "Jack fruit",
-	"image": require("../images/21.jpg")
+	"label": "Baigan long",
+	"image": require("../images/Baiganlong.jpg")
 },{
-	"label": "Kathal",
-	"image": require("../images/21.jpg")
+	"label": "Brinjal long",
+	"image": require("../images/Baiganlong.jpg")
 },{
-	"label": "Kheksi",
-	"image": require("../images/22.jpg")
+	"label": "Beans",
+	"image": require("../images/Beans.jpg")
 },{
-	"label": "Lal Bhaji (without roots)",
-	"image": require("../images/23.jpg")
-},{
-	"label": "Long Beans / Barbatti",
-	"image": require("../images/24.jpg")
-},{
-	"label": "Barbatti",
-	"image": require("../images/24.jpg")
-},{
-	"label": "Lotus Stem",
-	"image": require("../images/25.jpg")
-},{
-	"label": "Kamal Kakdi",
-	"image": require("../images/25.jpg")
-},{
-	"label": "Mint",
-	"image": require("../images/26.jpg")
-},{
-	"label": "Pudina",
-	"image": require("../images/26.jpg")
-},{
-	"label": "Okra (Lady Finger) / Bhindi",
-	"image": require("../images/27.jpg")
+	"label": "Bhaada",
+	"image": require("../images/Bhaada.jpg")
 },{
 	"label": "Bhindi",
-	"image": require("../images/27.jpg")
+	"image": require("../images/Bhindi.jpg")
 },{
-	"label": "Parwal- (Seasonal only)",
-	"image": require("../images/30.jpg")
-},{
-	"label": "Papaya Raw (Medium size )",
-	"image": require("../images/31.jpg")
-},{
-	"label": "Papita Medium",
-	"image": require("../images/31.jpg")
-},{
-	"label": "Pumpkin Red",
-	"image": require("../images/32.jpg")
-},{
-	"label": "Kaddu Red",
-	"image": require("../images/32.jpg")
-},{
-	"label": "Pumpkin White",
-	"image": require("../images/33.jpg")
-},{
-	"label": "Kaddu White",
-	"image": require("../images/33.jpg")
-},{
-	"label": "Radish White",
-	"image": require("../images/34.jpg")
-},{
-	"label": "Mooli White",
-	"image": require("../images/34.jpg")
-},{
-	"label": "Raw mango",
-	"image": require("../images/35.jpg")
-},{
-	"label": "Aam Hara",
-	"image": require("../images/35.jpg")
-},{
-	"label": "Red Chilly-Fresh",
-	"image": require("../images/36.jpg")
-},{
-	"label": "Mirch Laal",
-	"image": require("../images/36.jpg")
-},{
-	"label": "Ridge Gourd- Torai",
-	"image": require("../images/37.jpg")
-},{
-	"label": "Torai",
-	"image": require("../images/37.jpg")
-},{
-	"label": "Spring Onion Local ",
-	"image": require("../images/39.jpg")
-},{
-	"label": "Pyaaz Basant ",
-	"image": require("../images/39.jpg")
-},{
-	"label": "Tinda",
-	"image": require("../images/40.jpg")
-},{
-	"label": "Tomato Large",
-	"image": require("../images/41.jpg")
-},{
-	"label": "Tamatar Large",
-	"image": require("../images/41.jpg")
-},{
-	"label": "Tomato Desi Seasonal",
-	"image": require("../images/42.jpg")
-},{
-	"label": "Tamatar Desi Seasonal",
-	"image": require("../images/42.jpg")
-},{
-	"label": "Yam (Suran)/ Zamikand",
-	"image": require("../images/43.jpg")
-},{
-	"label": "Suran",
-	"image": require("../images/43.jpg")
-},{
-	"label": "Banana leaf",
-	"image": require("../images/44.jpg")
-},{
-	"label": "Kele ka Patta",
-	"image": require("../images/44.jpg")
-},{
-	"label": "Potato Sweet",
-	"image": require("../images/45.jpg")
-},{
-	"label": "Shakarkand",
-	"image": require("../images/45.jpg")
-},{
-	"label": "Corn Whole / Bhutta",
-	"image": require("../images/46.jpg")
+	"label": "Ladyfinger",
+	"image": require("../images/Bhindi.jpg")
 },{
 	"label": "Bhutta",
-	"image": require("../images/46.jpg")
+	"image": require("../images/Bhutta.jpg")
 },{
-	"label": "Arbi Leaf/Pcs",
-	"image": require("../images/47.jpg")
+	"label": "Corn",
+	"image": require("../images/Bhutta.jpg")
 },{
-	"label": "Chech Bhaji",
-	"image": require("../images/48.jpg")
+	"label": "Chauraiya",
+	"image": require("../images/Chauraiya.jpg")
 },{
-	"label": "Green Mutter",
-	"image": require("../images/50.jpg")
+	"label": "Chausa Aam",
+	"image": require("../images/ChausaAam.jpg")
 },{
-	"label": "Garlic Green",
-	"image": require("../images/51.jpg")
+	"label": "Chausa Mango",
+	"image": require("../images/ChausaAam.jpg")
 },{
-	"label": "Lehsun Green",
-	"image": require("../images/51.jpg")
+	"label": "Chukandar",
+	"image": require("../images/Chukandar.jpg")
 },{
-	"label": "Onion Small",
-	"image": require("../images/49.jpg")
+	"label": "Beetroot",
+	"image": require("../images/Chukandar.jpg")
 },{
-	"label": "Pyaaz Small",
-	"image": require("../images/49.jpg")
+	"label": "Cut Achar Aam",
+	"image": require("../images/CutAcharAam.jpg")
 },{
-	"label": "Garlic Peeled",
-	"image": require("../images/52.jpg")
+	"label": "Cut Pickle Mango",
+	"image": require("../images/CutAcharAam.jpg")
 },{
-	"label": "Lehsun Peeled",
-	"image": require("../images/52.jpg")
+	"label": "Dhaniya",
+	"image": require("../images/Dhaniya.jpg")
 },{
-	"label": "Kamadi Seasonal ",
-	"image": require("../images/53.jpg")
+	"label": "Coriander",
+	"image": require("../images/Dhaniya.jpg")
 },{
-	"label": "Bathua",
-	"image": require("../images/53.jpg")
+	"label": "French Beans",
+	"image": require("../images/FrenchBeans.jpg")
 },{
-	"label": "Spring Onion Imp.",
-	"image": require("../images/54.jpg")
+	"label": "Gaajar ",
+	"image": require("../images/Gaajar.jpg")
 },{
-	"label": "Pyaaz Basant Imp.",
-	"image": require("../images/54.jpg")
+	"label": "Carrot ",
+	"image": require("../images/Gaajar.jpg")
 },{
-	"label": "Gourd Bitter (Karela) Seasonal",
-	"image": require("../images/55.jpg")
+	"label": "Gol Baigan",
+	"image": require("../images/GolBaigan.jpg")
 },{
-	"label": "Karela Seasonal",
-	"image": require("../images/55.jpg")
+	"label": "Round Brinjal",
+	"image": require("../images/GolBaigan.jpg")
 },{
-	"label": "Gourd Bitter (Karela) Seasonal",
-	"image": require("../images/55.jpg")
+	"label": "Guar Phali",
+	"image": require("../images/GuarPhali.jpg")
 },{
-	"label": "Gourd Bitter (Karela) Seasonal",
-	"image": require("../images/55.jpg")
+	"label": "Hari Mirch ",
+	"image": require("../images/HariMirch.jpg")
+},{
+	"label": "Green Chilli ",
+	"image": require("../images/HariMirch.jpg")
+},{
+	"label": "Jalpan",
+	"image": require("../images/Jalpan.jpg")
+},{
+	"label": "Jamun",
+	"image": require("../images/Jamun.jpg")
+},{
+	"label": "Kaccha Aam ",
+	"image": require("../images/KacchaAam.jpg")
+},{
+	"label": "Raw Mango ",
+	"image": require("../images/KacchaAam.jpg")
+},{
+	"label": "Kaccha Aam Duseri",
+	"image": require("../images/KacchaAamDuseri.jpg")
+},{
+	"label": "Raw Mango Duseri",
+	"image": require("../images/KacchaAamDuseri.jpg")
+},{
+	"label": "Kaccha Papita",
+	"image": require("../images/KacchaPapita.jpg")
+},{
+	"label": "Raw Papaya",
+	"image": require("../images/KacchaPapita.jpg")
+},{
+	"label": "Kachcha Aam Pickle",
+	"image": require("../images/KachchaAamPickle.jpg")
+},{
+	"label": "Raw Mango Pickle",
+	"image": require("../images/KachchaAamPickle.jpg")
+},{
+	"label": "Kachha Kela",
+	"image": require("../images/KachhaKela.jpg")
+},{
+	"label": "Banana Raw",
+	"image": require("../images/KachhaKela.jpg")
+},{
+	"label": "Kaddu Lal",
+	"image": require("../images/KadduLal.jpg")
+},{
+	"label": "Pumpkin Red",
+	"image": require("../images/KadduLal.jpg")
+},{
+	"label": "Kaddu",
+	"image": require("../images/Kaddu.jpg")
+},{
+	"label": "Pumpkin",
+	"image": require("../images/Kaddu.jpg")
+},{
+	"label": "Karela",
+	"image": require("../images/Karela.jpg")
+},{
+	"label": "Bitter Gourd",
+	"image": require("../images/Karela.jpg")
+},{
+	"label": "Katahal Pickle",
+	"image": require("../images/KatahalPickle.jpg")
+},{
+	"label": "Jackfruit Pickle",
+	"image": require("../images/KatahalPickle.jpg")
+},{
+	"label": "Kathal",
+	"image": require("../images/Kathal.jpg")
+},{
+	"label": "Jackfruit",
+	"image": require("../images/Kathal.jpg")
+},{
+	"label": "Kela",
+	"image": require("../images/Kela.jpg")
+},{
+	"label": "Banana",
+	"image": require("../images/Kela.jpg")
+},{
+	"label": "Kharbuja",
+	"image": require("../images/Kharbuja.jpg")
+},{
+	"label": "Musk Melon",
+	"image": require("../images/Kharbuja.jpg")
+},{
+	"label": "Kheera",
+	"image": require("../images/Kheera.jpg")
+},{
+	"label": "Cucumber",
+	"image": require("../images/Kheera.jpg")
+},{
+	"label": "Kundru",
+	"image": require("../images/Kundru.jpg")
+},{
+	"label": "Ivy Gourd",
+	"image": require("../images/Kundru.jpg")
+},{
+	"label": "Lahsun",
+	"image": require("../images/Lahsun.jpg")
+},{
+	"label": "Garlic",
+	"image": require("../images/Lahsun.jpg")
+},{
+	"label": "Lauki",
+	"image": require("../images/Lauki.jpg")
+},{
+	"label": "Bottle Gourd",
+	"image": require("../images/Lauki.jpg")
+},{
+	"label": "Lobiya",
+	"image": require("../images/Lobiya.jpg")
+},{
+	"label": "Mausammi",
+	"image": require("../images/Mausammi.jpg")
+},{
+	"label": "Mooli",
+	"image": require("../images/Mooli.jpg")
+},{
+	"label": "Raddish",
+	"image": require("../images/Mooli.jpg")
+},{
+	"label": "Mushroom",
+	"image": require("../images/Mushroom.jpg")
+},{
+	"label": "Naaga",
+	"image": require("../images/Naaga.jpg")
+},{
+	"label": "Nari Ka Saag",
+	"image": require("../images/NariKaSaag.jpg")
+},{
+	"label": "Nariyal Brown ",
+	"image": require("../images/NariyalBrown.jpg")
+},{
+	"label": "Coconut Brown ",
+	"image": require("../images/NariyalBrown.jpg")
+},{
+	"label": "Nariyal Hara Creamless",
+	"image": require("../images/NariyalHaraCreamless.jpg")
+},{
+	"label": "Coconut Green Creamless",
+	"image": require("../images/NariyalHaraCreamless.jpg")
+},{
+	"label": "Nimbu",
+	"image": require("../images/Nimbu.jpg")
+},{
+	"label": "Lemon",
+	"image": require("../images/Nimbu.jpg")
+},{
+	"label": "Paalak",
+	"image": require("../images/Paalak.jpg")
 },{
 	"label": "Spinach",
-	"image": require("../images/56.jpg")
+	"image": require("../images/Paalak.jpg")
 },{
-	"label": "Palak",
-	"image": require("../images/56.jpg")
-},
+	"label": "Papita",
+	"image": require("../images/Papita.jpg")
+},{
+	"label": "Dale wala dasheri",
+	"image": require("../images/Dalewaladasheri.jpg")
+},{
+	"label": "Papaya",
+	"image": require("../images/Papita.jpg")
+},{
+	"label": "Palledari",
+	"image": require("../images/Palledari.jpg")
+},{
+	"label": "Parwal Desi",
+	"image": require("../images/ParwalDesi.jpg")
+},{
+	"label": "Snake Gourd Desi",
+	"image": require("../images/ParwalDesi.jpg")
+},{
+	"label": "Parwal",
+	"image": require("../images/Parwal.jpg")
+},{
+	"label": "Snake Gourd",
+	"image": require("../images/Parwal.jpg")
+},{
+	"label": "Patta Gobhi",
+	"image": require("../images/PattaGobhi.jpg")
+},{
+	"label": "Cabbage",
+	"image": require("../images/PattaGobhi.jpg")
+},{
+	"label": "Phool Gobhi",
+	"image": require("../images/PhoolGobhi.jpg")
+},{
+	"label": "Cauliflower",
+	"image": require("../images/PhoolGobhi.jpg")
+},{
+	"label": "Pyaaz ",
+	"image": require("../images/Pyaaz.jpg")
+},{
+	"label": "Onion ",
+	"image": require("../images/Pyaaz.jpg")
+},{
+	"label": "Safeda Aam",
+	"image": require("../images/SafedaAam.jpg")
+},{
+	"label": "Safeda Mango",
+	"image": require("../images/SafedaAam.jpg")
+},{
+	"label": "Shimla Mirch ",
+	"image": require("../images/ShimlaMirch.jpg")
+},{
+	"label": "Green Capsicum",
+	"image": require("../images/ShimlaMirch.jpg")
+},{
+	"label": "Tamatar",
+	"image": require("../images/Tamatar.jpg")
+},{
+	"label": "Tomato",
+	"image": require("../images/Tamatar.jpg")
+},{
+	"label": "Tarbooj",
+	"image": require("../images/Tarbooj.jpg")
+},{
+	"label": "Watermelon",
+	"image": require("../images/Tarbooj.jpg")
+},{
+	"label": "Tinda",
+	"image": require("../images/Tinda.jpg")
+},{
+	"label": "Round Melon",
+	"image": require("../images/Tinda.jpg")
+},{
+	"label": "Pudina",
+	"image": require("../images/Pudina.jpg")
+},{
+	"label": "Mint",
+	"image": require("../images/Pudina.jpg")
+},{
+	"label": "Torai",
+	"image": require("../images/Torai.jpg")
+}
 ]
 
 

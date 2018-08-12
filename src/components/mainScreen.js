@@ -29,7 +29,6 @@ import {
 	Body,
 	Icon,
 	Text,
-	Form,
 	Subtitle
 } from 'native-base';
 
@@ -39,15 +38,16 @@ export default class MainScreen extends Component {
 	constructor(props) {
 
 		super(props);
-
+		
 		this.state = {
 			isLoading: false,
 			text: '',
 			selected: false,
-			amount: '',
+			amount: '', 
 			weight: '',
 			rate: '',
-			timestamp: '',
+			marketrate: '',
+			totalAmt:0,
 			pList: [],
 			vList: false
 		};
@@ -59,7 +59,8 @@ export default class MainScreen extends Component {
 			amount,
 			weight,
 			selected,
-			rate
+			rate,
+			marketrate
 		} = this.state;
 		this.setState((prevState) => {
 			prevState.pList.push({
@@ -67,6 +68,7 @@ export default class MainScreen extends Component {
 				weight: weight,
 				selected: selected,
 				rate: rate,
+				marketrate:marketrate,
 				'UserID': firebase.auth().currentUser.email
 			});
 			return prevState;
@@ -74,11 +76,13 @@ export default class MainScreen extends Component {
 		this.setState({
 			amount:'',
 			weight:'',
-			rate:''
+			rate:'',
+			marketrate: ''
 		});
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
-	deleteListData(rowToDelete) {
+	deleteListData(rowToDelete,rowData) {
+		let {totalAmt}=this.state
 		this.setState((prevState) => {
 			prevState.pList = prevState.pList.filter((dataname) => {
 				if (dataname.selected !== rowToDelete) {
@@ -87,10 +91,13 @@ export default class MainScreen extends Component {
 			});
 			return prevState;
 		});
+		totalAmt=totalAmt-parseFloat(rowData);
+		console.log(rowData)
+		this.setState({totalAmt});
 	}
 
 	showList() {
-
+ 
 		return <ListShow/>;
 	}
 
@@ -98,9 +105,10 @@ export default class MainScreen extends Component {
 		let {
 			amount,
 			weight,
-			rate
+			rate,
+			selected,
+			totalAmt
 		} = this.state;
-
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseFloat(weight) * rate;
 			result = result.toFixed(2);
@@ -113,15 +121,26 @@ export default class MainScreen extends Component {
 			let result = parseFloat(amount) / weight;
 			result = result.toFixed(2);
 			rate = "" + result
-		} else {
-			return Alert.alert('Error', 'Please check the data');
+		} else if(selected== "Bhaada" || selected=="Palledari" || selected=="Jalpan")
+		{
+			amount=amount
+			weight=""
+			rate=""
 		}
+		else
+		{
+				return Alert.alert('Error', 'Please check the data');
+		}
+		totalAmt=totalAmt+parseFloat(amount)
+		this.setState({totalAmt});
+		console.log(totalAmt);
 		this.setState({
 			amount,
 			weight,
 			rate
 		},
 		() => this.addtoList());
+	
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
@@ -131,12 +150,13 @@ export default class MainScreen extends Component {
 		});
 	}
 	renderSelected(item) {
+		
 		const {
 			amount,
 			weight,
 			selected,
 			rate,
-			vList
+			marketrate
 		} = this.state;
 		if (!!!item) {
 			return null;
@@ -181,7 +201,13 @@ export default class MainScreen extends Component {
 							value={weight}
 							keyboardType="numeric" placeholder="Weight" />
 					</Item>
-				
+					<Item>
+						<Icon  name="ios-pricetag" />
+						<Input
+							onChangeText={marketrate => this.setState({ marketrate })}
+							value={marketrate}
+							keyboardType="numeric" placeholder="Market Rate" />
+					</Item>
 				</Content>
 			</CardItem>
 			
@@ -212,7 +238,7 @@ export default class MainScreen extends Component {
 	}
 	render() {
 		if (this.state.vList) {
-			return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={(rowToDelete)=>this.deleteListData(rowToDelete)}/>;
+			return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} total={this.state.totalAmt}/>;
 		} else {
 
 			const {
