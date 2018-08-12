@@ -97,9 +97,26 @@ export default class Order extends Component{
 			}),
 			refreshing: false,
 			rowToDelete: null,
-			sheet:true
+            sheet:true,
+            orderData:[]
 		};
-	}
+    }
+    googleSheetsgetData(){
+        var formData = new formData();
+        this.setState({orderData:formData.get()});
+        fetch('https://script.google.com/macros/s/AKfycbx-Ii0Vq2d8JPFYLRuVen7XD6SDVGYB4gvckJCMIltbwKI7VnxJ/exec', {
+			mode: 'no-cors',
+			method: 'get',
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			},
+			body: formData
+		}).then(function(response) {
+			
+		}).catch(console.log);
+        
+        
+    }
 	componentDidMount() {
 		
 		InteractionManager.runAfterInteractions(() => {
