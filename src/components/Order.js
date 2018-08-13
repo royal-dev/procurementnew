@@ -35,7 +35,6 @@ const window = Dimensions.get('window');
 
 class DynamicListRow extends Component {
 
-	
 	_defaultHeightValue = 60;
 	_defaultTransition = 500;
 
@@ -50,7 +49,7 @@ class DynamicListRow extends Component {
 			duration: this._defaultTransition
 		}).start()
 
-		BackHandler.addEventListener('hardwareBackPress', ()=>{
+		BackHandler.addEventListener('hardwareBackPress', () => {
 			return false
 		});
 	}
@@ -87,9 +86,8 @@ class DynamicListRow extends Component {
 	}
 }
 
-
-export default class Order extends Component{
-    constructor(props) {
+export default class Order extends Component {
+	constructor(props) {
 		super(props);
 		this.state = {
 			loading: true,
@@ -98,13 +96,13 @@ export default class Order extends Component{
 			}),
 			refreshing: false,
 			rowToDelete: null,
-            sheet:true,
-            orderData:[]
+			sheet: true,
+			orderData: []
 		};
-    }
-  
+	}
+
 	componentDidMount() {
-		
+
 		InteractionManager.runAfterInteractions(() => {
 			this._loadData()
 		});
@@ -114,10 +112,7 @@ export default class Order extends Component{
 		refresh && this.setState({
 			refreshing: true
 		});
-
-		this.dataLoadSuccess({
-			data: this.state.orderData
-		});
+		this.readUserData();
 	}
 
 	dataLoadSuccess(result) {
@@ -133,15 +128,15 @@ export default class Order extends Component{
 			dataSource: ds
 		});
 		console.log(this._data);
-    }
-    _renderRow(rowData, sectionID, rowID) {
+	}
+	_renderRow(rowData, sectionID, rowID) {
 		return (
 			<DynamicListRow>
                 <View style={styles.rowStyle}>
 
                     <View style={styles.contact}>
                         <Text style={[styles.name]}>{rowData.orderid}</Text>
-                        <Text style={styles.phone}>Order : {rowData.details} </Text>
+                        <Text style={styles.phone}>Order : {rowData.orderitem} </Text>
                     </View>
 
                 </View>
@@ -149,15 +144,25 @@ export default class Order extends Component{
 		);
 	}
 	readUserData() {
-		let {orderData}=this.state;
-		firebase.database().ref('Orders/').on('value', function (snapshot) {
-			this.setState({orderData:JSON.stringify(snapshot.val())});
-			console.log(snapshot.val())
+		let that = this;
+		firebase.database().ref('orders/').on('value', function(snapshot) {
+			let data = snapshot.val();
+			let orderData = [];
+			let keys = Object.keys(data);
+			keys.forEach(function(e) {
+				orderData.push(data[e]);
+			})
+			that.setState({
+				orderData: orderData
+			});
+			that.dataLoadSuccess({
+				data: orderData
+			});
 		});
 	}
-    render(){
-        return(
-            <Container>
+	render() {
+		return (
+			<Container>
 				<Header>
 					<Left>
 						<Button transparent onPress={()=>this.props.back()}>
@@ -204,17 +209,17 @@ export default class Order extends Component{
 					</FooterTab>
        				</Footer>
             </Container>);
-                }
-            
+	}
+
 }
 const styles = StyleSheet.create({
-    HeaderText:{
-        padding:10,
-        fontWeight:"600",
-        fontSize: 22,
-        fontFamily:"sans-serif"
+	HeaderText: {
+		padding: 10,
+		fontWeight: "600",
+		fontSize: 22,
+		fontFamily: "sans-serif"
 
-    },
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#fff'
@@ -261,7 +266,7 @@ const styles = StyleSheet.create({
 	},
 
 	name: {
-		fontWeight:"600",
+		fontWeight: "600",
 		color: '#212121',
 		fontSize: 14
 	},
