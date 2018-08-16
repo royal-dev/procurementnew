@@ -30,7 +30,7 @@ import {
 	Badge
 	
 } from 'native-base';
-
+var RNFS = require('react-native-fs');
 import firebase from 'firebase';
 const window = Dimensions.get('window');
 
@@ -146,6 +146,10 @@ export default class DynamicList extends Component {
 			dataSource: ds
 		});
 		console.log(this._data);
+	}
+	genFile(){
+		let path= RNFS.DocumentDirectoryPath+'/procure.txt';
+		RNFS.writeFile(path,JSON.stringify(this._data),'utf8').then((success)=> {ToastAndroid.show('File Generated at'+path,ToastAndroid.LONG)}).catch((e)=>{ToastAndroid.show('Error Generating File',ToastAndroid.SHORT)});
 	}
 
 	render() {
@@ -291,9 +295,14 @@ export default class DynamicList extends Component {
 			},
 			body: formData
 		}).then(function(response) {
+			
 			ToastAndroid.show('Updated',ToastAndroid.SHORT)
 		}).catch(console.log);
+		this.genFile();
 		this.setState({sheet:false});
+		this.props.newSession;
+		
+	
 	}
 
 	componentWillUpdate(nexProps, nexState) {

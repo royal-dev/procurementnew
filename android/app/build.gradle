@@ -156,6 +156,7 @@ dependencies {
     }
     compile ("com.google.android.gms:play-services-base:+") { // the plus allows you to use the latest version
         force = true;
+        compile project(path: ':react-native-fs')
     }
 }
 

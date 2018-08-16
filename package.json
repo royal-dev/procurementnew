@@ -13,6 +13,7 @@
     "react": "16.3.1",
     "react-native": "0.55.4",
     "react-native-autocomplete-input": "^3.5.0",
+    "react-native-fs": "^2.11.15",
     "react-native-swipeout": "^2.3.6"
   },
   "devDependencies": {

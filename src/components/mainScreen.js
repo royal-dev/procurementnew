@@ -73,6 +73,7 @@ export default class MainScreen extends Component {
 	}
 	
 	addtoList() {
+
 		const {
 			amount,
 			weight,
@@ -167,6 +168,9 @@ export default class MainScreen extends Component {
 			Alert.alert('Error', 'Temporary Error, 400');
 		});
 	}
+	newSession(){
+		this.setState({pList:[]});
+	}
 	
 	renderSelected(item) {
 		
@@ -260,7 +264,11 @@ export default class MainScreen extends Component {
 		if(this.state.orderList){
 			return <Order back={()=> this.setState({orderList:false})} list={this.state.pList} number={this.state.num} />
 		}else if (this.state.vList) {
-			return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} total={this.state.totalAmt}/>;
+			return <ListShow list={this.state.pList} 
+			back={()=>this.setState({vList:false})} 
+			delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} 
+			total={this.state.totalAmt}
+			newSession={()=>this.setState({pList:[]})} />;
 		} else {
 
 			const {

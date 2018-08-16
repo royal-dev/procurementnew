@@ -25,3 +25,4 @@ export default class App extends Component {
 		return <Root><LoginForm/></Root>;
 	}
 }
+

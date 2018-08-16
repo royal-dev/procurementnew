@@ -12,4 +12,8 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "procurement";
     }
+    @Override
+    public void invokeDefaultOnBackPressed() {
+    moveTaskToBack(true);
+}
 }
