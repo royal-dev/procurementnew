@@ -3,13 +3,29 @@
 	var orderid = document.getElementById("orderid");
 	var date = document.getElementById("date");
 	var orderitem = document.getElementById("orderitem");
-	var database = firebase.database();
+	try{
 	document.forms.contact.addEventListener('submit', function(e) {
 		e.preventDefault();
-		database.ref('orders/').push({
+		
+		var key = Math.random().toString(36).substr(2);
+	  
+		var newData={
+			id: key,
 			orderid: orderid.value,
 			date: date.value,
-			orderitem: orderitem.value
-		});
-	});
+			orderitem: orderitem.value,
+			orderweight: orderweight.value
+		 }
+	  
+		 firebase.database().ref('/orders/'+ key).set(newData);
+	  
+	});}catch(e){
+		alert("Error, Updating");
+	}
 }());
+
+
+
+	
+	
+	

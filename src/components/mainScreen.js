@@ -52,11 +52,26 @@ export default class MainScreen extends Component {
 			totalAmt:0,
 			pList: [],
 			vList: false,
-			orderList:false
+			orderList:false,
+			num:0
 		};
 
 	}
 
+
+	componentWillMount(){
+	
+		let that = this;
+		firebase.database().ref('orders/').on('value', function(snapshot) {
+			let data = snapshot.val();
+			if(data==null){
+				that.setState({num:0})
+			}else{
+			let num=Object.keys(snapshot.val()).length;
+			that.setState({num:num});}
+		});
+	}
+	
 	addtoList() {
 		const {
 			amount,
@@ -243,7 +258,7 @@ export default class MainScreen extends Component {
 	}
 	render() {
 		if(this.state.orderList){
-			return <Order back={()=> this.setState({orderList:false})} list={this.state.pList} />
+			return <Order back={()=> this.setState({orderList:false})} list={this.state.pList} number={this.state.num} />
 		}else if (this.state.vList) {
 			return <ListShow list={this.state.pList} back={()=>this.setState({vList:false})} delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} total={this.state.totalAmt}/>;
 		} else {
@@ -292,7 +307,7 @@ export default class MainScreen extends Component {
               		<Text>Main</Text>
             		</Button>
             		<Button badge vertical onPress={()=> this.setState({orderList:true})}>
-					<Badge><Text>2</Text></Badge>
+					<Badge><Text>{this.state.num}</Text></Badge>
               		<Icon type="FontAwesome" name="shopping-cart" />
              		<Text>Orders</Text>
            			</Button>

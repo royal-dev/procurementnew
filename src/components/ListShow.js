@@ -31,7 +31,7 @@ import {
 	
 } from 'native-base';
 
-
+import firebase from 'firebase';
 const window = Dimensions.get('window');
 
 class DynamicListRow extends Component {
@@ -99,8 +99,20 @@ export default class DynamicList extends Component {
 			}),
 			refreshing: false,
 			rowToDelete: null,
-			sheet:true
+			sheet:true,
+			num:0
 		};
+	}
+	componentWillMount(){
+		let that = this;
+		firebase.database().ref('orders/').on('value', function(snapshot) {
+			let data = snapshot.val();
+			if(data==null){
+				that.setState({num:0})
+			}else{
+			let num=Object.keys(snapshot.val()).length;
+			that.setState({num:num});}
+		});
 	}
 	
 
@@ -191,7 +203,7 @@ export default class DynamicList extends Component {
               		<Text>Main</Text>
             		</Button>
             		<Button badge vertical>
-					<Badge><Text>2</Text></Badge>
+					<Badge><Text>{this.state.num}</Text></Badge>
               		<Icon type="FontAwesome" name="shopping-cart" />
              		<Text>Orders</Text>
            			</Button>
@@ -216,7 +228,7 @@ export default class DynamicList extends Component {
 		</Header>
 		<Content style={
 			{
-				padding: 10
+				padding: 5
 			}
 		}>
 			<View style={styles.addPanel}>
@@ -227,6 +239,19 @@ export default class DynamicList extends Component {
 				</Button> 
 			</View>
 			</Content>
+			<Footer>
+         		 <FooterTab>
+            		<Button vertical onPress={this.props.back}>
+              		<Icon name="apps" />
+              		<Text>Main</Text>
+            		</Button>
+            		<Button badge vertical>
+					<Badge><Text>{this.state.num}</Text></Badge>
+              		<Icon type="FontAwesome" name="shopping-cart" />
+             		<Text>Orders</Text>
+           			</Button>
+					</FooterTab>
+       				</Footer>	
 			</Container>
 		);
 		}

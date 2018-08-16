@@ -14,6 +14,7 @@ import {
 	ToastAndroid,
 	BackHandler
 } from 'react-native';
+import Swipeout from 'react-native-swipeout';
 import {
 	Container,
 	Header,
@@ -27,9 +28,11 @@ import {
 	Text,
 	FooterTab,
 	Footer,
-	Badge
+	Badge,
+	Toast
 } from 'native-base';
 import firebase from 'firebase';
+console.ignoredYellowBox=true
 
 const window = Dimensions.get('window');
 
@@ -97,8 +100,10 @@ export default class Order extends Component {
 			refreshing: false,
 			rowToDelete: null,
 			sheet: true,
-			orderData: []
+			orderData: [],
+			num:0,
 		};
+		
 	}
 
 	componentDidMount() {
@@ -130,25 +135,54 @@ export default class Order extends Component {
 		console.log(this._data);
 	}
 	_renderRow(rowData, sectionID, rowID) {
+		let swipeBtns = [{
+			text: 'Complete',
+			backgroundColor: 'green',
+			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+			onPress: () => { this._deleteItem(rowData) }
+		  }, {
+			text: 'Pending',
+			backgroundColor: 'red',
+			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+			onPress: () => { ToastAndroid.show('Pending',ToastAndroid.SHORT) }
+		 }];
+		 
 		return (
+			
 			<DynamicListRow>
                 <View style={styles.rowStyle}>
-
+				
                     <View style={styles.contact}>
-                        <Text style={[styles.name]}>{rowData.orderid}</Text>
-                        <Text style={styles.phone}>Order : {rowData.orderitem} </Text>
+					<Swipeout right={swipeBtns}
+					autoClose={true}
+       				 backgroundColor= 'transparent'>
+                        <Text style={styles.name}>Order: {rowData.orderitem}, Weight: {rowData.orderweight} kgs</Text>
+                        <Text style={styles.phone}>Dated: {rowData.date}, Order ID: {rowData.orderid}</Text>
+						
+					</Swipeout>
                     </View>
-
                 </View>
             </DynamicListRow>
 		);
 	}
+	  
+_deleteItem(rowData){
+
+	firebase.database().ref('orders').child(rowData.id).remove();
+	
+	ToastAndroid.show('Completed.',ToastAndroid.SHORT)
+}
+
+	
+	
 	readUserData() {
 		let that = this;
 		firebase.database().ref('orders/').on('value', function(snapshot) {
 			let data = snapshot.val();
+			if(data !== null){
 			let orderData = [];
 			let keys = Object.keys(data);
+			let num=Object.keys(snapshot.val()).length;
 			keys.forEach(function(e) {
 				orderData.push(data[e]);
 			})
@@ -158,6 +192,12 @@ export default class Order extends Component {
 			that.dataLoadSuccess({
 				data: orderData
 			});
+			
+			that.setState({num:num});
+		}else{
+			that.setState({orderData:[]})
+			that.setState({num:0});
+		}
 		});
 	}
 	render() {
@@ -176,7 +216,6 @@ export default class Order extends Component {
 				</Header>
                 <View style={styles.addPanel}>
 					<Text style={styles.HeaderText}>Procurement Orders</Text>
-					
 					</View>
                 <ListView
 						refreshControl={
@@ -202,7 +241,7 @@ export default class Order extends Component {
               		<Text>Main</Text>
             		</Button>
             		<Button badge vertical>
-					<Badge><Text>2</Text></Badge>
+					<Badge><Text>{this.state.num}</Text></Badge>
               		<Icon type="FontAwesome" name="shopping-cart" />
              		<Text>Orders</Text>
            			</Button>
@@ -213,6 +252,15 @@ export default class Order extends Component {
 
 }
 const styles = StyleSheet.create({
+	subText: {
+		paddingHorizontal:10,
+		paddingTop:2,
+		paddingBottom:2,
+		fontSize: 12,
+		fontFamily: "sans-serif",
+		
+
+	},
 	HeaderText: {
 		padding: 10,
 		fontWeight: "600",
@@ -249,13 +297,24 @@ const styles = StyleSheet.create({
 		alignSelf: 'center'
 	},
 
+	rowStylePending: {
+		backgroundColor: '#EC644B',
+		paddingVertical: 2,
+		paddingHorizontal: 5,
+		borderBottomColor: '#ccc',
+		borderBottomWidth: 1,
+		flexDirection: 'row',
+		
+	},
+
 	rowStyle: {
 		backgroundColor: '#FFF',
 		paddingVertical: 2,
-		paddingHorizontal: 10,
+		paddingHorizontal: 5,
 		borderBottomColor: '#ccc',
 		borderBottomWidth: 1,
-		flexDirection: 'row'
+		flexDirection: 'row',
+		
 	},
 
 	rowIcon: {
@@ -266,16 +325,17 @@ const styles = StyleSheet.create({
 	},
 
 	name: {
-		fontWeight: "600",
+		fontWeight: "500",
 		color: '#212121',
-		fontSize: 14
+		fontSize: 16
 	},
 	phone: {
+		
 		color: '#212121',
-		fontSize: 10
+		fontSize: 16
 	},
 	contact: {
-		width: window.width - 100,
+		width: window.width-10,
 		alignSelf: 'flex-start'
 	},
 
@@ -285,9 +345,14 @@ const styles = StyleSheet.create({
 		marginHorizontal: 10
 	},
 	deleteWrapper: {
-		paddingVertical: 2,
-		width: 80,
+		paddingVertical: 5,
+		width: 60,
 		alignSelf: 'flex-end'
+	},
+	keepWrapper: {
+		paddingVertical: 5,
+		width: 60,
+		alignSelf: 'center'
 	},
 	deleteIcon: {
 		fontSize: 24,

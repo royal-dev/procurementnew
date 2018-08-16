@@ -6,22 +6,26 @@
             
             <div class="container">  
                 <form id="contact" action="" method="post">
-                  <h3>Procure Order Form</h3>
+                  <h3>Procure Order</h3>
                   <h4>Add orders for procurement</h4>
                   <fieldset>
-                    <input id="orderid" placeholder="Order ID" type="text" tabindex="1" required autofocus>
+                    <input id="orderid" placeholder="Order ID" maxlength="3" type="text" tabindex="1" required autofocus>
+                  </fieldset>
+                  <fieldset>Order Date: 
+                    <input id="date" placeholder="Order Date DD/MM/YY" maxlength="8" type="date" tabindex="2" required>
                   </fieldset>
                   <fieldset>
-                    <input id="date" placeholder="Order Date" type="text" tabindex="2" required>
-                  </fieldset>
-                  <fieldset>
-                    <input id="orderitem" placeholder="Order Item" type="text" tabindex="3" required>
+                    <input id="orderitem" placeholder="Order Item" maxlength="15" type="text" tabindex="3" required>
+                  </fieldset><fieldset>
+                    <input id="orderweight" placeholder="Order Weight in Kgs" maxlength="4" type="text" tabindex="4" required>
                   </fieldset>
                   <fieldset>
                     <button name="submit" type="submit">Submit</button>
                   </fieldset>
+                  
                 </form>
-              </div>              
+              </div>
+              <button onclick="removeData()">Refresh Database</button>              
 <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -35,7 +39,15 @@
   };
   firebase.initializeApp(config);
 </script>
-<script src="index.js"></script>            
+<script language="javascript" type="text/javascript">
+  function removeData(){
+  
+    var database = firebase.database()
+      database.ref('orders/').set(null);
+      console.log("ssss")
+  }</script> 
+<script src="index.js"></script>   
+<script src="auto.js"></script>         
         </Body>
     </Head>
 </html>
