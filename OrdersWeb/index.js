@@ -18,7 +18,10 @@
 		 }
 	  
 		 firebase.database().ref('/orders/'+ key).set(newData);
-	  
+		 var x = document.getElementById("snackbar");
+    	x.className = "show";
+    	setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+
 	});}catch(e){
 		alert("Error, Updating");
 	}
