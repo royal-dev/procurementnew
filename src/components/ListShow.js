@@ -151,7 +151,7 @@ export default class DynamicList extends Component {
 		let path= RNFS.DocumentDirectoryPath+'/procure.txt';
 		RNFS.writeFile(path,JSON.stringify(this._data),'utf8').then((success)=> {ToastAndroid.show('File Generated at'+path,ToastAndroid.LONG)}).catch((e)=>{ToastAndroid.show('Error Generating File',ToastAndroid.SHORT)});
 	}
-
+	
 	render() {
 		if(this.state.sheet){
 		return (
@@ -206,11 +206,7 @@ export default class DynamicList extends Component {
               		<Icon name="apps" />
               		<Text>Main</Text>
             		</Button>
-            		<Button badge vertical>
-					<Badge><Text>{this.state.num}</Text></Badge>
-              		<Icon type="FontAwesome" name="shopping-cart" />
-             		<Text>Orders</Text>
-           			</Button>
+            		
 					</FooterTab>
        				</Footer>
 			</Container>
@@ -249,11 +245,6 @@ export default class DynamicList extends Component {
               		<Icon name="apps" />
               		<Text>Main</Text>
             		</Button>
-            		<Button badge vertical>
-					<Badge><Text>{this.state.num}</Text></Badge>
-              		<Icon type="FontAwesome" name="shopping-cart" />
-             		<Text>Orders</Text>
-           			</Button>
 					</FooterTab>
        				</Footer>	
 			</Container>
