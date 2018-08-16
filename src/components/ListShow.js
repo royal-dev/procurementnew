@@ -291,7 +291,7 @@ export default class DynamicList extends Component {
 		}).catch(console.log);
 		this.genFile();
 		this.setState({sheet:false});
-		this.props.newSession;
+		this.props.newSession();
 		
 	
 	}

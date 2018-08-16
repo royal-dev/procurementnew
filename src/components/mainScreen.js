@@ -268,7 +268,7 @@ export default class MainScreen extends Component {
 			back={()=>this.setState({vList:false})} 
 			delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} 
 			total={this.state.totalAmt}
-			newSession={()=>this.setState({pList:[]})} />;
+			newSession={()=>this.setState({pList:[],totalAmt:0})} />;
 		} else {
 
 			const {

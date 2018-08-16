@@ -137,12 +137,12 @@ export default class Order extends Component {
 	_renderRow(rowData, sectionID, rowID) {
 		let swipeBtns = [{
 			text: 'Complete',
-			backgroundColor: 'green',
+			backgroundColor: '#26A65B',
 			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
 			onPress: () => { this._deleteItem(rowData) }
 		  }, {
 			text: 'Pending',
-			backgroundColor: 'red',
+			backgroundColor: '#F64747',
 			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
 			onPress: () => { ToastAndroid.show('Pending',ToastAndroid.SHORT) }
 		 }];
