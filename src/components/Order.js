@@ -173,8 +173,7 @@ _deleteItem(rowData){
 	ToastAndroid.show('Completed.',ToastAndroid.SHORT)
 }
 
-	
-	
+
 	readUserData() {
 		let that = this;
 		firebase.database().ref('orders/').on('value', function(snapshot) {
@@ -199,6 +198,7 @@ _deleteItem(rowData){
 			that.setState({num:0});
 		}
 		});
+
 	}
 	render() {
 		return (
