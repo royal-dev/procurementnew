@@ -134,35 +134,45 @@ export default class Order extends Component {
 		});
 		console.log(this._data);
 	}
+
+	_setPending(rowID){
+		this._data[rowID].state="pending";
+		this.setState({
+			dataSource: this.state.dataSource.cloneWithRows(this._data)
+		});
+	}
+	_rowStyle(rowState){
+		if(rowState && rowState=="pending"){
+			return styles.rowStylePending;
+		}
+		return styles.rowStyle;
+	}
 	_renderRow(rowData, sectionID, rowID) {
 		let swipeBtns = [{
 			text: 'Complete',
 			backgroundColor: '#26A65B',
 			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
-			onPress: () => { this._deleteItem(rowData) }
+			onPress: () => this._deleteItem(rowData) 
 		  }, {
 			text: 'Pending',
 			backgroundColor: '#F64747',
 			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
-			onPress: () => { ToastAndroid.show('Pending',ToastAndroid.SHORT) }
+			onPress: () => ToastAndroid.show('Pending',ToastAndroid.SHORT) & this._setPending(rowID)
 		 }];
 		 
 		return (
-			
 			<DynamicListRow>
-                <View style={styles.rowStyle}>
-				
-                    <View style={styles.contact}>
-					<Swipeout right={swipeBtns}
-					autoClose={true}
-       				 backgroundColor= 'transparent'>
-                        <Text style={styles.name}>Order: {rowData.orderitem}, Weight: {rowData.orderweight} kgs</Text>
-                        <Text style={styles.phone}>Dated: {rowData.date}, Order ID: {rowData.orderid}</Text>
-						
-					</Swipeout>
-                    </View>
-                </View>
-            </DynamicListRow>
+				<View style={this._rowStyle(rowData.state)}>
+					<View style={styles.contact}>
+						<Swipeout right={swipeBtns}
+							autoClose={true}
+							backgroundColor= 'transparent'>
+							<Text style={styles.name}>Order: {rowData.orderitem}, Weight: {rowData.orderweight} kgs</Text>
+							<Text style={styles.phone}>Dated: {rowData.date}, Order ID: {rowData.orderid}</Text>
+						</Swipeout>
+					</View>
+				</View>
+			</DynamicListRow>
 		);
 	}
 	  
