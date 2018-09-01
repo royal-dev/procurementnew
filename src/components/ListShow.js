@@ -30,7 +30,7 @@ import {
 	Badge
 	
 } from 'native-base';
-var RNFS = require('react-native-fs');
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import firebase from 'firebase';
 const window = Dimensions.get('window');
 
@@ -147,10 +147,18 @@ export default class DynamicList extends Component {
 		});
 		console.log(this._data);
 	}
-	genFile(){
-		let path= RNFS.DocumentDirectoryPath+'/procure.txt';
-		RNFS.writeFile(path,JSON.stringify(this._data),'utf8').then((success)=> {ToastAndroid.show('File Generated at'+path,ToastAndroid.LONG)}).catch((e)=>{ToastAndroid.show('Error Generating File',ToastAndroid.SHORT)});
-	}
+	async createPDF() {
+		let options = {
+		  html: '<h1>Report - Procured Items</h1>',
+		  fileName: 'test',
+		  directory: 'docs',
+		};
+	
+		let file = await RNHTMLtoPDF.convert(options)
+		// console.log(file.filePath);
+		alert(file.filePath);
+	  }
+	
 	
 	render() {
 		if(this.state.sheet){
@@ -289,7 +297,7 @@ export default class DynamicList extends Component {
 			
 			ToastAndroid.show('Updated',ToastAndroid.SHORT)
 		}).catch(console.log);
-		this.genFile();
+		this.createPDF();
 		this.setState({sheet:false});
 		this.props.newSession();
 		
