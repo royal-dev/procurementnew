@@ -156,7 +156,6 @@ dependencies {
     }
        
     compile project(':react-native-html-to-pdf')
-    compile project(':react-native-share')
 }
 
 // Run this once to be able to run the application with BUCK

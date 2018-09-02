@@ -12,7 +12,8 @@ import {
 	Animated,
 	Dimensions,
 	ToastAndroid,
-	BackHandler
+	BackHandler,
+	Share
 } from 'react-native';
 import {
 	Container,
@@ -27,7 +28,8 @@ import {
 	Text,
 	FooterTab,
 	Footer,
-	Badge
+	Badge,
+	Toast
 	
 } from 'native-base';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
@@ -147,17 +149,35 @@ export default class DynamicList extends Component {
 		});
 		console.log(this._data);
 	}
-	async createPDF() {
+	async createPDF(data) {
+		let pageData ='<html> <script type="text/javascript"> var data = '+JSON.stringify(data)+'var mytable = "<table cellpadding=\"0\" cellspacing=\"0\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";for (var i = 0; i < data.length; i++) {mytable += "<tr>";mytable += "<td>" + data[i].selected + "</td>";mytable += "<td>" + data[i].weight + "</td>";mytable += "<td>" + data[i].rate + "</td>";mytable += "<td>" + data[i].amount + "</td>";mytable += "<tr>";} mytable += "</tbody></table>"; document.body.innerText=(mytable);</script><body></body></html>'
+		var today = new Date();
+		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		let options = {
-		  html: '<h1>Report - Procured Items</h1>',
-		  fileName: 'test',
-		  directory: 'docs',
+		  html: pageData,
+		  fileName: 'ProcureReport'+date,
+		  directory: 'Procure',
 		};
 	
 		let file = await RNHTMLtoPDF.convert(options)
-		// console.log(file.filePath);
+		
 		alert(file.filePath);
+		this.onShare(file.filePath)
+		
 	  }
+	  onShare(file) {  
+		Share.share({
+			message: 'Share Procurement Report on WhatsApp',
+			url: file,
+			title: 'Share Report'
+		  }, {
+			
+			dialogTitle: 'Share Procurement Report'
+			
+			
+		  })
+	  }
+
 	
 	
 	render() {
@@ -297,7 +317,7 @@ export default class DynamicList extends Component {
 			
 			ToastAndroid.show('Updated',ToastAndroid.SHORT)
 		}).catch(console.log);
-		this.createPDF();
+		this.createPDF(this._data);
 		this.setState({sheet:false});
 		this.props.newSession();
 		
