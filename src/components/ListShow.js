@@ -150,7 +150,7 @@ export default class DynamicList extends Component {
 		console.log(this._data);
 	}
 	async createPDF(data) {
-		let pageData ='<html> <script type="text/javascript"> var data = '+JSON.stringify(data)+'var mytable = "<table cellpadding=\"0\" cellspacing=\"0\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";for (var i = 0; i < data.length; i++) {mytable += "<tr>";mytable += "<td>" + data[i].selected + "</td>";mytable += "<td>" + data[i].weight + "</td>";mytable += "<td>" + data[i].rate + "</td>";mytable += "<td>" + data[i].amount + "</td>";mytable += "<tr>";} mytable += "</tbody></table>"; document.body.innerText=(mytable);</script><body></body></html>'
+		let pageData ='<html> <script type="text/javascript"> var data ='+JSON.stringify(data)+' var mytable = "<table cellpadding=\"0\" cellspacing=\"0\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";for (var i = 0; i < data.length; i++) {mytable += "<tr>";mytable += "<td>" + data[i].selected + "</td>";mytable += "<td>" + data[i].weight + "</td>";mytable += "<td>" + data[i].rate + "</td>";mytable += "<td>" + data[i].amount + "</td>";mytable += "<tr>";} mytable += "</tbody></table>"; document.body.innerText=(mytable);</script><body></body></html>'
 		var today = new Date();
 		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		let options = {
@@ -172,9 +172,7 @@ export default class DynamicList extends Component {
 			title: 'Share Report'
 		  }, {
 			
-			dialogTitle: 'Share Procurement Report'
-			
-			
+			dialogTitle: 'Share Procurement Report'			
 		  })
 	  }
 
