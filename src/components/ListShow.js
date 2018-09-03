@@ -13,7 +13,7 @@ import {
 	Dimensions,
 	ToastAndroid,
 	BackHandler,
-	Share
+	Platform
 } from 'react-native';
 import {
 	Container,
@@ -33,6 +33,8 @@ import {
 	
 } from 'native-base';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
 import firebase from 'firebase';
 const window = Dimensions.get('window');
 
@@ -150,30 +152,42 @@ export default class DynamicList extends Component {
 		console.log(this._data);
 	}
 	async createPDF(data) {
-		let pageData ='<html> <script type="text/javascript"> var data ='+JSON.stringify(data)+' var mytable = "<table cellpadding=\"0\" cellspacing=\"0\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";for (var i = 0; i < data.length; i++) {mytable += "<tr>";mytable += "<td>" + data[i].selected + "</td>";mytable += "<td>" + data[i].weight + "</td>";mytable += "<td>" + data[i].rate + "</td>";mytable += "<td>" + data[i].amount + "</td>";mytable += "<tr>";} mytable += "</tbody></table>"; document.body.innerText=(mytable);</script><body></body></html>'
+		var mytable = "<html><body><h1>Procurement Report</h1><table cellpadding=\"5\" cellspacing=\"5\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";
+		for (var i = 0; i < data.length; i++) {
+			mytable += "<tr>";
+			mytable += "<td>" + data[i].selected + "</td>";
+			mytable += "<td>" + data[i].weight + "</td>";
+			mytable += "<td>" + data[i].rate + "</td>";
+			mytable += "<td>" + data[i].amount + "</td>";
+			mytable += "<tr>";
+		}
+		mytable += "</tbody></table></body></html>";
 		var today = new Date();
 		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		let options = {
-		  html: pageData,
+		  html: mytable,
 		  fileName: 'ProcureReport'+date,
-		  directory: 'Procure',
-		  base64: true
+		  directory: 'Procure'
 		};
 	
-		let file = await RNHTMLtoPDF.convert(options)
-		
-		console.log(file)
-		this.onShare(file.base64)
-		
+		let pdf = await RNHTMLtoPDF.convert(options)
+		//let file = await RNFS.readFile(pdf.filePath, 'base64');
+		//this.onShare(file)
+		this.onShare(pdf.filePath);
 	  }
-	  onShare(file) {  
-		Share.share({
+	  onShare(file) {
+		let options = {
+			type: type,
+			url: (Platform.OS === 'android' ? 'file://' + file : file)
+		  };
+		  Share.open(options);
+		/*Share.share({
 			url: 'data:application/pdf,base64,'+file,
 			title: 'Share Report'
 		  }, {
 			
 			dialogTitle: 'Share Procurement Report'			
-		  })
+		  })*/
 	  }
 
 	
