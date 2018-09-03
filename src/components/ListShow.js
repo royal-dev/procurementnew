@@ -162,13 +162,13 @@ export default class DynamicList extends Component {
 	
 		let file = await RNHTMLtoPDF.convert(options)
 		
-		
-		this.onShare(file.filePath)
+		console.log(file)
+		this.onShare(file.base64)
 		
 	  }
 	  onShare(file) {  
 		Share.share({
-			url: file,
+			url: 'data:application/pdf,base64,'+file,
 			title: 'Share Report'
 		  }, {
 			
