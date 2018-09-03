@@ -157,17 +157,17 @@ export default class DynamicList extends Component {
 		  html: pageData,
 		  fileName: 'ProcureReport'+date,
 		  directory: 'Procure',
+		  base64: true
 		};
 	
 		let file = await RNHTMLtoPDF.convert(options)
 		
-		alert(file.filePath);
+		
 		this.onShare(file.filePath)
 		
 	  }
 	  onShare(file) {  
 		Share.share({
-			message: 'Share Procurement Report on WhatsApp',
 			url: file,
 			title: 'Share Report'
 		  }, {
