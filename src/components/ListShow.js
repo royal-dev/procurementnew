@@ -33,8 +33,6 @@ import {
 	
 } from 'native-base';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import RNFS from 'react-native-fs';
-import Share from 'react-native-share';
 import firebase from 'firebase';
 const window = Dimensions.get('window');
 
@@ -152,7 +150,9 @@ export default class DynamicList extends Component {
 		console.log(this._data);
 	}
 	async createPDF(data) {
-		var mytable = "<html><body><h1>Procurement Report</h1><table cellpadding=\"5\" cellspacing=\"5\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";
+		var today = new Date();
+		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() +'-'+ today.getHours() + "-"  + today.getMinutes() + "-" + today.getSeconds();
+		var mytable = "<html><body><h1>Procurement Report - Dated = "+date+"</h1><table cellpadding=\"5\" cellspacing=\"5\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";
 		for (var i = 0; i < data.length; i++) {
 			mytable += "<tr>";
 			mytable += "<td>" + data[i].selected + "</td>";
@@ -162,34 +162,16 @@ export default class DynamicList extends Component {
 			mytable += "<tr>";
 		}
 		mytable += "</tbody></table></body></html>";
-		var today = new Date();
-		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-		let options = {
+				let options = {
 		  html: mytable,
 		  fileName: 'ProcureReport'+date,
-		  directory: 'Procure'
+		  directory: 'docs'
 		};
 	
 		let pdf = await RNHTMLtoPDF.convert(options)
-		//let file = await RNFS.readFile(pdf.filePath, 'base64');
-		//this.onShare(file)
-		this.onShare(pdf.filePath);
+		ToastAndroid.show('Report saved at:'+ pdf.filePath,ToastAndroid.LONG);
 	  }
-	  onShare(file) {
-		let options = {
-			type: type,
-			url: (Platform.OS === 'android' ? 'file://' + file : file)
-		  };
-		  Share.open(options);
-		/*Share.share({
-			url: 'data:application/pdf,base64,'+file,
-			title: 'Share Report'
-		  }, {
-			
-			dialogTitle: 'Share Procurement Report'			
-		  })*/
-	  }
-
+	 
 	
 	
 	render() {
@@ -296,18 +278,18 @@ export default class DynamicList extends Component {
 	_renderRow(rowData, sectionID, rowID) {
 		return (
 			<DynamicListRow
-                remove={rowData.selected === this.state.rowToDelete}
+                remove={rowData.uid === this.state.rowToDelete}
                 onRemoving={this._onAfterRemovingElement.bind(this)}
             >
                 <View style={styles.rowStyle}>
 
                     <View style={styles.contact}>
-                        <Text style={[styles.name]}>{rowData.selected}</Text>
+                        <Text style={[styles.name]}>{rowData.uid}</Text>
                         <Text style={styles.phone}>Weight : {rowData.weight} kgs</Text>
 						<Text style={styles.phone}>Amount: {rowData.amount} Rs. </Text>
 						<Text style={styles.phone}>Rate: {rowData.rate} Rs.</Text>
                     </View>
-                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.selected,rowData.amount)}>
+                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.uid,rowData.amount)}>
                         <Icon name='md-remove-circle' style={styles.deleteIcon}/>
                     </TouchableOpacity>
                 </View>
