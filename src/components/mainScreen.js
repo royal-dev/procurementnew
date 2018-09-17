@@ -33,7 +33,7 @@ import {
 	Badge
 
 } from 'native-base';
-
+const key = Math.random().toString(36).substr(2);
 import * as firebase from 'firebase';
 export default class MainScreen extends Component {
 
@@ -73,13 +73,13 @@ export default class MainScreen extends Component {
 	}
 	
 	addtoList() {
-
+		
 		const {
 			amount,
 			weight,
 			selected,
 			rate,
-			marketrate
+			marketrate,
 		} = this.state;
 		this.setState((prevState) => {
 			prevState.pList.push({
@@ -88,6 +88,7 @@ export default class MainScreen extends Component {
 				selected: selected,
 				rate: rate,
 				marketrate:marketrate,
+				uid:key,
 				'UserID': firebase.auth().currentUser.email
 			});
 			return prevState;
@@ -96,7 +97,8 @@ export default class MainScreen extends Component {
 			amount:'',
 			weight:'',
 			rate:'',
-			marketrate: ''
+			marketrate: '',
+			
 		});
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
@@ -104,7 +106,7 @@ export default class MainScreen extends Component {
 		let {totalAmt}=this.state
 		this.setState((prevState) => {
 			prevState.pList = prevState.pList.filter((dataname) => {
-				if (dataname.selected !== rowToDelete) {
+				if (dataname.uid !== rowToDelete) {
 					return dataname;
 				}
 			});
@@ -179,7 +181,8 @@ export default class MainScreen extends Component {
 			weight,
 			selected,
 			rate,
-			marketrate
+			marketrate,
+			uid
 		} = this.state;
 		if (!!!item) {
 			return null;
