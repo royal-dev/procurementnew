@@ -30,7 +30,7 @@ import {
 	Footer,
 	Badge,
 	Toast
-	
+
 } from 'native-base';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import firebase from 'firebase';
@@ -38,7 +38,6 @@ const window = Dimensions.get('window');
 
 class DynamicListRow extends Component {
 
-	
 	_defaultHeightValue = 60;
 	_defaultTransition = 500;
 
@@ -53,7 +52,7 @@ class DynamicListRow extends Component {
 			duration: this._defaultTransition
 		}).start()
 
-		BackHandler.addEventListener('hardwareBackPress', ()=>{
+		BackHandler.addEventListener('hardwareBackPress', () => {
 			return false
 		});
 	}
@@ -97,29 +96,33 @@ export default class DynamicList extends Component {
 		this.state = {
 			loading: true,
 			dataSource: new ListView.DataSource({
-				rowHasChanged: (row1, row2) => true
+				rowHasChanged: (r1, r2) => r1 !== r2
 			}),
 			refreshing: false,
 			rowToDelete: null,
-			sheet:true,
-			num:0
+			sheet: true,
+			num: 0
 		};
 	}
-	componentWillMount(){
+	componentWillMount() {
 		let that = this;
 		firebase.database().ref('orders/').on('value', function(snapshot) {
 			let data = snapshot.val();
-			if(data==null){
-				that.setState({num:0})
-			}else{
-			let num=Object.keys(snapshot.val()).length;
-			that.setState({num:num});}
+			if (data == null) {
+				that.setState({
+					num: 0
+				})
+			} else {
+				let num = Object.keys(snapshot.val()).length;
+				that.setState({
+					num: num
+				});
+			}
 		});
 	}
-	
 
 	componentDidMount() {
-		
+
 		InteractionManager.runAfterInteractions(() => {
 			this._loadData()
 		});
@@ -151,8 +154,8 @@ export default class DynamicList extends Component {
 	}
 	async createPDF(data) {
 		var today = new Date();
-		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() +'-'+ today.getHours() + "-"  + today.getMinutes() + "-" + today.getSeconds();
-		var mytable = "<html><body><h1>Procurement Report - Dated = "+date+"</h1><table cellpadding=\"5\" cellspacing=\"5\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";
+		var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
+		var mytable = "<html><body><h1>Procurement Report - Dated = " + date + "</h1><table cellpadding=\"5\" cellspacing=\"5\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td></thead><tbody>";
 		for (var i = 0; i < data.length; i++) {
 			mytable += "<tr>";
 			mytable += "<td>" + data[i].selected + "</td>";
@@ -162,23 +165,21 @@ export default class DynamicList extends Component {
 			mytable += "<tr>";
 		}
 		mytable += "</tbody></table></body></html>";
-				let options = {
-		  html: mytable,
-		  fileName: 'ProcureReport'+date,
-		  directory: 'docs'
+		let options = {
+			html: mytable,
+			fileName: 'ProcureReport' + date,
+			directory: 'docs'
 		};
-	
+
 		let pdf = await RNHTMLtoPDF.convert(options)
-		ToastAndroid.show('Report saved at:'+ pdf.filePath,ToastAndroid.LONG);
-	  }
-	 
-	
-	
+		ToastAndroid.show('Report saved at:' + pdf.filePath, ToastAndroid.LONG);
+	}
+
 	render() {
-		if(this.state.sheet){
-		return (
-			
-			<Container>
+		if (this.state.sheet) {
+			return (
+
+				<Container>
 				<Header>
 					<Left>
 						<Button transparent onPress={()=>this.props.back()}>
@@ -232,11 +233,11 @@ export default class DynamicList extends Component {
 					</FooterTab>
        				</Footer>
 			</Container>
-		);
-	}else{
-	
-	return (
-	<Container>
+			);
+		} else {
+
+			return (
+				<Container>
 		<Header>
 			<Left>
 				<Button transparent onPress={()=>this.props.back()}>
@@ -270,7 +271,7 @@ export default class DynamicList extends Component {
 					</FooterTab>
        				</Footer>	
 			</Container>
-		);
+			);
 		}
 
 	}
@@ -284,7 +285,7 @@ export default class DynamicList extends Component {
                 <View style={styles.rowStyle}>
 
                     <View style={styles.contact}>
-                        <Text style={[styles.name]}>{rowData.uid}</Text>
+                        <Text style={[styles.name]}>{rowData.selected}</Text>
                         <Text style={styles.phone}>Weight : {rowData.weight} kgs</Text>
 						<Text style={styles.phone}>Amount: {rowData.amount} Rs. </Text>
 						<Text style={styles.phone}>Rate: {rowData.rate} Rs.</Text>
@@ -308,39 +309,39 @@ export default class DynamicList extends Component {
 			},
 			body: formData
 		}).then(function(response) {
-			
-			ToastAndroid.show('Updated',ToastAndroid.SHORT)
+
+			ToastAndroid.show('Updated', ToastAndroid.SHORT)
 		}).catch(console.log);
 		this.createPDF(this._data);
-		this.setState({sheet:false});
+		this.setState({
+			sheet: false
+		});
 		this.props.newSession();
-		
-	
+
 	}
 
-	componentWillUpdate(nexProps, nexState) {
-		if (nexState.rowToDelete !== null) {
+	componentWillUpdate(nextProps, nextState) {
+		if (nextState.rowToDelete !== null) {
 			this._data = this._data.filter((item) => {
-				if (item.selected !== nexState.rowToDelete) {
+				if (item.uid !== nextState.rowToDelete) {
 					return item;
 				}
+			});
+			this.setState({
+				rowToDelete: null,
+				dataSource: this.state.dataSource.cloneWithRows(this._data)
 			});
 		}
 	}
 
-	_deleteItem(id,rowData) {
+	_deleteItem(id, amount) {
 		this.setState({
 			rowToDelete: id
 		});
-		this.props.delete(id,rowData);
-
+		this.props.delete(id, amount);
 	}
 
 	_onAfterRemovingElement() {
-		this.setState({
-			rowToDelete: null,
-			dataSource: this.state.dataSource.cloneWithRows(this._data)
-		});
 	}
 
 }
@@ -392,7 +393,7 @@ const styles = StyleSheet.create({
 	},
 
 	name: {
-		fontWeight:"600",
+		fontWeight: "600",
 		color: '#212121',
 		fontSize: 14
 	},

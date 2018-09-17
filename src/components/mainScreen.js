@@ -33,47 +33,51 @@ import {
 	Badge
 
 } from 'native-base';
-const key = Math.random().toString(36).substr(2);
 import * as firebase from 'firebase';
 export default class MainScreen extends Component {
 
 	constructor(props) {
 
 		super(props);
-		
+
 		this.state = {
 			isLoading: false,
 			text: '',
 			selected: false,
-			amount: '', 
+			amount: '',
 			weight: '',
 			rate: '',
 			marketrate: '',
-			totalAmt:0,
+			totalAmt: 0,
 			pList: [],
 			vList: false,
-			orderList:false,
-			num:0
+			orderList: false,
+			num: 0
 		};
 
 	}
 
+	componentWillMount() {
 
-	componentWillMount(){
-	
 		let that = this;
 		firebase.database().ref('orders/').on('value', function(snapshot) {
 			let data = snapshot.val();
-			if(data==null){
-				that.setState({num:0})
-			}else{
-			let num=Object.keys(snapshot.val()).length;
-			that.setState({num:num});}
+			if (data === null) {
+				that.setState({
+					num: 0
+				})
+			} else {
+				let num = Object.keys(snapshot.val()).length;
+				that.setState({
+					num: num
+				});
+			}
 		});
 	}
-	
+
 	addtoList() {
-		
+		let key = Math.random().toString(36).substr(2);
+
 		const {
 			amount,
 			weight,
@@ -87,38 +91,38 @@ export default class MainScreen extends Component {
 				weight: weight,
 				selected: selected,
 				rate: rate,
-				marketrate:marketrate,
-				uid:key,
+				marketrate: marketrate,
+				uid: key,
 				'UserID': firebase.auth().currentUser.email
 			});
 			return prevState;
 		});
-		this.setState({
-			amount:'',
-			weight:'',
-			rate:'',
-			marketrate: '',
-			
-		});
+		/*
+				this.setState({
+					amount: '',
+					weight: '',
+					rate: '',
+					marketrate: '',
+				});*/
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
-	deleteListData(rowToDelete,rowData) {
-		let {totalAmt}=this.state
+	deleteListData(rowToDelete, amount) {
+		let {
+			totalAmt
+		} = this.state
 		this.setState((prevState) => {
 			prevState.pList = prevState.pList.filter((dataname) => {
 				if (dataname.uid !== rowToDelete) {
 					return dataname;
+				} else {
+					prevState.totalAmt = prevState.totalAmt - parseFloat(amount);
 				}
 			});
 			return prevState;
 		});
-		totalAmt=totalAmt-parseFloat(rowData);
-		console.log(rowData)
-		this.setState({totalAmt});
 	}
 
 	showList() {
- 
 		return <ListShow/>;
 	}
 
@@ -130,6 +134,7 @@ export default class MainScreen extends Component {
 			selected,
 			totalAmt
 		} = this.state;
+
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseFloat(weight) * rate;
 			result = result.toFixed(2);
@@ -142,26 +147,24 @@ export default class MainScreen extends Component {
 			let result = parseFloat(amount) / weight;
 			result = result.toFixed(2);
 			rate = "" + result
-		} else if(selected== "Bhaada" || selected=="Palledari" || selected=="Jalpan")
-		{
-			amount=amount
-			weight=""
-			rate=""
+		} else if (selected == "Bhaada" || selected == "Palledari" || selected == "Jalpan") {
+			amount = amount
+			weight = ""
+			rate = ""
+		} else {
+			return Alert.alert('Error', 'Please check the data');
 		}
-		else
-		{
-				return Alert.alert('Error', 'Please check the data');
-		}
-		totalAmt=totalAmt+parseFloat(amount)
-		this.setState({totalAmt});
+		totalAmt = totalAmt + parseFloat(amount)
+		this.setState({
+			totalAmt
+		});
 		console.log(totalAmt);
 		this.setState({
-			amount,
-			weight,
-			rate
-		},
-		() => this.addtoList());
-	
+				amount,
+				weight,
+				rate
+			},
+			() => this.addtoList());
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
@@ -170,12 +173,13 @@ export default class MainScreen extends Component {
 			Alert.alert('Error', 'Temporary Error, 400');
 		});
 	}
-	newSession(){
-		this.setState({pList:[]});
+	newSession() {
+		this.setState({
+			pList: []
+		});
 	}
-	
+
 	renderSelected(item) {
-		
 		const {
 			amount,
 			weight,
@@ -260,16 +264,15 @@ export default class MainScreen extends Component {
 					</Button>
 			</Content>
 			</CardItem>
-		</Card>
-		;
+		</Card>;
 	}
 	render() {
-		if(this.state.orderList){
+		if (this.state.orderList) {
 			return <Order back={()=> this.setState({orderList:false})} list={this.state.pList} number={this.state.num} />
-		}else if (this.state.vList) {
+		} else if (this.state.vList) {
 			return <ListShow list={this.state.pList} 
 			back={()=>this.setState({vList:false})} 
-			delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} 
+			delete={(rowToDelete,amount)=>this.deleteListData(rowToDelete,amount)} 
 			total={this.state.totalAmt}
 			newSession={()=>this.setState({pList:[],totalAmt:0})} />;
 		} else {
