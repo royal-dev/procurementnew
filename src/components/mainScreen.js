@@ -6,12 +6,13 @@ import {
 	StyleSheet,
 	Image,
 	Alert,
-	ToastAndroid
+	ToastAndroid,
+	Picker,
+	AsyncStorage
 } from 'react-native';
 import ListShow from './ListShow';
 import Order from './Order';
 import Autocomplete from 'react-native-autocomplete-input';
-import allData from './data';
 import {
 	Container,
 	Header,
@@ -27,59 +28,115 @@ import {
 	Body,
 	Icon,
 	Text,
-	Subtitle,
-	FooterTab,
-	Footer,
-	Badge
+	Subtitle
 
 } from 'native-base';
-const key = Math.random().toString(36).substr(2);
 import * as firebase from 'firebase';
 export default class MainScreen extends Component {
 
 	constructor(props) {
 
 		super(props);
-		
+
 		this.state = {
 			isLoading: false,
 			text: '',
 			selected: false,
-			amount: '', 
+			amount: '',
 			weight: '',
 			rate: '',
 			marketrate: '',
-			totalAmt:0,
+			totalAmt: 0,
+			comments:'',
 			pList: [],
 			vList: false,
-			orderList:false,
-			num:0
+			orderList: false,
+			num: 0,
+			allData:[],
+			unit:'kgs',
+			CommentsList:[],
+			authLevel:'',
+			authUser:''
 		};
 
 	}
-
-
-	componentWillMount(){
-	
-		let that = this;
-		firebase.database().ref('orders/').on('value', function(snapshot) {
-			let data = snapshot.val();
-			if(data==null){
-				that.setState({num:0})
-			}else{
-			let num=Object.keys(snapshot.val()).length;
-			that.setState({num:num});}
-		});
+	getauthLevel(){
+		let authUserID
+		firebase.auth().onAuthStateChanged(function(user) {
+			if (user) {
+			  authUserID=firebase.auth().currentUser.email
+			} else {
+			  // No user is signed in.
+			}
+		  });
+		result=this.getUserLevelData(authUserID)
+		if(result=='admin'){
+			this.setState({authLevel:'admin'});
+		}else if(result=='operator'){
+			this.setState({authLevel:'operator'});
+		}
 	}
+	getUserLevelData(userID){
+	fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userAuthLevel.json')
+	.then(response => response.json())
+    .then((data) => {
+       for(var i = 0; i < data.length; i++)
+		{
+  			if(data[i].email == userID)
+				  return data[i].auth
+		}
+
+	});
+}
 	
-	addtoList() {
+	getUserSpecificData(){
 		
+	fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userprocuredata.json')
+	.then(response => response.json())
+	.then((data) => {
+	  this.setState({allData:data})});
+
+  }
+	getData(){
+		
+	  fetch('https://rawgit.com/classicyamaha/mbooksdata/master/procuredata.json')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({allData:data})});
+
+	}
+	getCommentsData(){
+		
+		fetch('https://rawgit.com/classicyamaha/mbooksdata/master/commentsData.json')
+		.then(response => response.json())
+		.then((data) => {
+		  this.setState({CommentsList:data})});
+  
+	  }
+
+	componentWillMount() {
+		this.getauthLevel();
+		if(this.state.authLevel=='admin'){
+		this.getData();}
+		else if(this.state.authLevel=='operator'){
+		this.getUserLevelData();}
+		this.getCommentsData();
+		this.timeruser = setInterval(()=> this.getUserLevelData(), 100000);
+		this.timerComments = setInterval(()=> this.getCommentsData(), 100000);
+		this.timer = setInterval(()=> this.getData(), 100000);
+	}
+
+	addtoList() {
+		let key = Math.random().toString(36).substr(2);
+
 		const {
 			amount,
 			weight,
 			selected,
 			rate,
 			marketrate,
+			comments,
+			unit
 		} = this.state;
 		this.setState((prevState) => {
 			prevState.pList.push({
@@ -87,38 +144,41 @@ export default class MainScreen extends Component {
 				weight: weight,
 				selected: selected,
 				rate: rate,
-				marketrate:marketrate,
-				uid:key,
-				'UserID': firebase.auth().currentUser.email
+				marketrate: marketrate,
+				comments:comments,
+				uid: key,
+				unit:unit,
+				userID: firebase.auth().currentUser.email
 			});
 			return prevState;
 		});
+
 		this.setState({
-			amount:'',
-			weight:'',
-			rate:'',
+			amount: '',
+			weight: '',
+			rate: '',
 			marketrate: '',
-			
+			comments:'',
 		});
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
 	}
-	deleteListData(rowToDelete,rowData) {
-		let {totalAmt}=this.state
+	deleteListData(rowToDelete, amount) {
+		let {
+			totalAmt
+		} = this.state
 		this.setState((prevState) => {
 			prevState.pList = prevState.pList.filter((dataname) => {
 				if (dataname.uid !== rowToDelete) {
 					return dataname;
+				} else {
+					prevState.totalAmt = prevState.totalAmt - parseFloat(amount);
 				}
 			});
 			return prevState;
 		});
-		totalAmt=totalAmt-parseFloat(rowData);
-		console.log(rowData)
-		this.setState({totalAmt});
 	}
 
 	showList() {
- 
 		return <ListShow/>;
 	}
 
@@ -130,6 +190,7 @@ export default class MainScreen extends Component {
 			selected,
 			totalAmt
 		} = this.state;
+
 		if (amount == '' && weight != '' && rate != '') {
 			let result = parseFloat(weight) * rate;
 			result = result.toFixed(2);
@@ -142,26 +203,24 @@ export default class MainScreen extends Component {
 			let result = parseFloat(amount) / weight;
 			result = result.toFixed(2);
 			rate = "" + result
-		} else if(selected== "Bhaada" || selected=="Palledari" || selected=="Jalpan")
-		{
-			amount=amount
-			weight=""
-			rate=""
+		} else if (selected == "Bhaada" || selected == "Palledari" || selected == "Jalpan") {
+			amount = amount
+			weight = ""
+			rate = ""
+		} else {
+			return Alert.alert('Error', 'Please check the data');
 		}
-		else
-		{
-				return Alert.alert('Error', 'Please check the data');
-		}
-		totalAmt=totalAmt+parseFloat(amount)
-		this.setState({totalAmt});
+		totalAmt = totalAmt + parseFloat(amount)
+		this.setState({
+			totalAmt
+		});
 		console.log(totalAmt);
 		this.setState({
-			amount,
-			weight,
-			rate
-		},
-		() => this.addtoList());
-	
+				amount,
+				weight,
+				rate
+			},
+			() => this.addtoList());
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
@@ -170,19 +229,23 @@ export default class MainScreen extends Component {
 			Alert.alert('Error', 'Temporary Error, 400');
 		});
 	}
-	newSession(){
-		this.setState({pList:[]});
+	newSession() {
+		this.setState({
+			pList: []
+		});
 	}
-	
+
 	renderSelected(item) {
-		
 		const {
 			amount,
 			weight,
 			selected,
 			rate,
 			marketrate,
-			uid
+			comments,
+			uid,
+			allData,
+			unit
 		} = this.state;
 		if (!!!item) {
 			return null;
@@ -190,7 +253,7 @@ export default class MainScreen extends Component {
 		item = allData.filter((e) => e.label == item)[0];
 		return <Card>
 			<CardItem cardBody>
-				{item.image && <Image source={item.image} style={style.cardImage} />}
+				<Image source = {{ uri: item.image }} style={style.cardImage} />
 			</CardItem>
 			<CardItem>
 				<Left>
@@ -220,20 +283,44 @@ export default class MainScreen extends Component {
 							value={rate}
 							keyboardType="numeric" placeholder="Rate" />
 					</Item>
-					<Item>
+					<Item style={{flexDirection:'row'}}>
 						<Icon type="MaterialCommunityIcons" name="weight-kilogram" />
 						<Input
 							onChangeText={weight => this.setState({ weight })}
 							value={weight}
 							keyboardType="numeric" placeholder="Weight" />
+						<Item>
+						
+            			<Picker
+  							selectedValue={unit}
+  							style={{ height: 50, width: 150 }}
+  							onValueChange={(itemValue, itemIndex) => this.setState({unit: itemValue})}>
+  							<Picker.Item label="Kilograms" value="kg" />
+  							<Picker.Item label="Dozens" value="dz" />
+							<Picker.Item label="Pieces" value="pcs" />
+
+						</Picker>
+          			
+					</Item>
 					</Item>
 					<Item>
-						<Icon  name="ios-pricetag" />
-						<Input
+						<Icon name="ios-pricetag" />
+							<Input
 							onChangeText={marketrate => this.setState({ marketrate })}
 							value={marketrate}
-							keyboardType="numeric" placeholder="Market Rate" />
+							placeholder="Market Rate" />
 					</Item>
+					<Item>
+						<Icon  type='FontAwesome' name="comment-o" />
+						<Picker
+						style={{ height: 50, width: 340 }}
+                        selectedValue={this.state.comments}
+                        onValueChange={(itemValue, itemIndex) => this.setState({ comments: itemValue })} >
+                        {this.state.CommentsList.map((item, key) => {
+                        return (<Picker.Item label={item.item} value={item.value} key={key} />)})}
+                        </Picker>
+					</Item>
+
 				</Content>
 			</CardItem>
 			
@@ -260,23 +347,26 @@ export default class MainScreen extends Component {
 					</Button>
 			</Content>
 			</CardItem>
-		</Card>
-		;
+		</Card>;
 	}
 	render() {
-		if(this.state.orderList){
+		if (this.state.orderList) {
 			return <Order back={()=> this.setState({orderList:false})} list={this.state.pList} number={this.state.num} />
-		}else if (this.state.vList) {
-			return <ListShow list={this.state.pList} 
+		} else if (this.state.vList) {
+			return <ListShow 
+			authLevel={this.state.authLevel}
+			list={this.state.pList} 
 			back={()=>this.setState({vList:false})} 
-			delete={(rowToDelete,rowData)=>this.deleteListData(rowToDelete,rowData)} 
+			delete={(rowToDelete,amount)=>this.deleteListData(rowToDelete,amount)} 
 			total={this.state.totalAmt}
-			newSession={()=>this.setState({pList:[],totalAmt:0})} />;
+			newSession={()=>this.setState({pList:[],totalAmt:0})}
+			 />;
 		} else {
 
 			const {
 				text,
-				selected
+				selected,
+				allData
 			} = this.state;
 			let data = [];
 			if (text.length) {
@@ -284,22 +374,23 @@ export default class MainScreen extends Component {
 			}
 			return (
 				<Container>
-				<Header>
+				<Header style={{backgroundColor:"rgba(1, 50, 67, 1)"}}>
 					<Body>
-						<Title>Procurement Service</Title>
+						<Title>Procure Service</Title>
 						<Subtitle>Meri Mandi</Subtitle>
 					</Body>
 					<Right>
 						<Button hasText transparent onPress={this.logout}>
-							<Text>Logout</Text>
+							<Text> <Icon style={{color:'white', fontSize:16}} type="Entypo" name="log-out"/> Logout</Text>
 						</Button>
 					</Right>
-				</Header>
+				</Header>	
 				<Content style={
 					{
 						padding: 10
 					}
 				}>
+				
 					<Autocomplete
 						data={data}
 						onChangeText={text => text && this.setState({ text })}
@@ -311,19 +402,7 @@ export default class MainScreen extends Component {
 					/>
 					{this.renderSelected(selected)}
 				</Content>
-				<Footer>
-         		 <FooterTab>
-            		<Button vertical>
-              		<Icon name="apps" />
-              		<Text>Main</Text>
-            		</Button>
-            		<Button badge vertical onPress={()=> this.setState({orderList:true})}>
-					<Badge><Text>{this.state.num}</Text></Badge>
-              		<Icon type="FontAwesome" name="shopping-cart" />
-             		<Text>Orders</Text>
-           			</Button>
-					</FooterTab>
-       				</Footer>
+				
 			</Container>
 			);
 		}

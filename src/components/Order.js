@@ -26,8 +26,6 @@ import {
 	Body,
 	Icon,
 	Text,
-	FooterTab,
-	Footer,
 	Badge,
 	Toast
 } from 'native-base';
@@ -203,7 +201,7 @@ _deleteItem(rowData){
 	render() {
 		return (
 			<Container>
-				<Header>
+				<Header style={{backgroundColor:"rgba(1, 50, 67, 1)"}}>
 					<Left>
 						<Button transparent onPress={()=>this.props.back()}>
 							<Icon name='arrow-back' />
@@ -214,9 +212,7 @@ _deleteItem(rowData){
 					</Body>
          		 <Right />
 				</Header>
-                <View style={styles.addPanel}>
-					<Text style={styles.HeaderText}>Procurement Orders</Text>
-					</View>
+            
                 <ListView
 						refreshControl={
 							<RefreshControl
@@ -234,19 +230,7 @@ _deleteItem(rowData){
 						dataSource={this.state.dataSource}
 						renderRow={this._renderRow.bind(this)}
 					/>
-            <Footer>
-         		 <FooterTab>
-            		<Button vertical onPress={this.props.back}>
-              		<Icon name="apps" />
-              		<Text>Main</Text>
-            		</Button>
-            		<Button badge vertical>
-					<Badge><Text>{this.state.num}</Text></Badge>
-              		<Icon type="FontAwesome" name="shopping-cart" />
-             		<Text>Orders</Text>
-           			</Button>
-					</FooterTab>
-       				</Footer>
+            
             </Container>);
 	}
 
@@ -263,6 +247,7 @@ const styles = StyleSheet.create({
 	},
 	HeaderText: {
 		padding: 10,
+		color:'white',
 		fontWeight: "600",
 		fontSize: 22,
 		fontFamily: "sans-serif"
@@ -282,7 +267,7 @@ const styles = StyleSheet.create({
 	addPanel: {
 		paddingTop: 10,
 		paddingBottom: 10,
-		backgroundColor: '#F9F9F9'
+		backgroundColor: 'rgba(1, 50, 67, 1)'
 	},
 	addButton: {
 		backgroundColor: '#0A5498',

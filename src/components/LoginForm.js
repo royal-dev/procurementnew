@@ -12,9 +12,11 @@ import {
 	KeyboardAvoidingView,
 	ActivityIndicator,
 	Alert,
-	AsyncStorage
+	AsyncStorage,
+	ToastAndroid
 } from 'react-native';
 import * as firebase from 'firebase';
+import ScreenNavigator from './ScreenNavigator';
 
 export default class LoginForm extends Component {
 	state = {
@@ -45,6 +47,7 @@ export default class LoginForm extends Component {
 				AsyncStorage.setItem('authUser', JSON.stringify(authUser));
 			}
 		});
+		
 	}
 
 	onPressSignIn() {
@@ -60,6 +63,7 @@ export default class LoginForm extends Component {
 				loading: false
 			});
 		}).catch((e) => {
+			ToastAndroid.show("User not Found, Creating one...")
 			console.log(e);
 			firebase.auth().createUserWithEmailAndPassword(username, password).then(() => {
 				this.setState({
@@ -83,7 +87,7 @@ export default class LoginForm extends Component {
         </View>;
 		}
 		if (this.state.authUser) {
-			return <MainScreen />;
+			return <ScreenNavigator />;
 		} else {
 			return <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
         <View style={styles.logoContainer}>
@@ -110,7 +114,8 @@ export default class LoginForm extends Component {
               value={this.state.password}
               onChangeText={password => this.setState({password})}/>
               <TouchableOpacity style={styles.ButtonStyle} onPress={()=> this.onPressSignIn()}>
-              <Text style={styles.ButtonTextStyle}>Log In</Text></TouchableOpacity>
+              <Text style={styles.ButtonTextStyle}>Log In - Create User</Text></TouchableOpacity>
+			  <Text style={{color:'black', textAlign:'center'}}>Version: 1.0.0, Sanaur Rahman</Text>
             </View>
       </KeyboardAvoidingView>;
 		}
@@ -124,7 +129,7 @@ const styles = StyleSheet.create({
 		fontWeight: '700'
 	},
 	ButtonStyle: {
-		backgroundColor: '#446CB3',
+		backgroundColor: 'rgba(1, 50, 67, 1)',
 		paddingVertical: 15,
 		marginBottom: 10,
 		paddingHorizontal: 10,
@@ -132,17 +137,17 @@ const styles = StyleSheet.create({
 	},
 	TextInputStyle: {
 		height: 40,
-		backgroundColor: '#52B3D9',
+		backgroundColor: 'rgba(129, 207, 224, 1)',
 		marginBottom: 20,
 		paddingHorizontal: 10,
-		color: '#FFF'
+		color: 'rgba(36, 37, 42, 1)'
 	},
 	loginContainer: {
 		padding: 20
 	},
 	container: {
 		flex: 1,
-		backgroundColor: '#C5EFF7',
+		backgroundColor: 'rgba(30, 139, 195, 0.45)',
 	},
 	logoContainer: {
 		justifyContent: 'center',
