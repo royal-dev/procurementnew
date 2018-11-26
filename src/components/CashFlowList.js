@@ -190,21 +190,23 @@ export default class DynamicList extends Component {
 		var totalAmount = Math.round(this.props.total,3);
 		var today = new Date();
 		var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
-		var mytable = "<html><body><h1>Procurement Report - Dated = " + date + "</h1><table cellpadding=\"5\" cellspacing=\"5\"><thead><td>Item Name</td><td>Item Quantity</td><td>Item Rate</td><td>Total Amount</td><td>Market Rate</td><td>Comments</td></thead><tbody>";
+		var mytable = "<html><body><h1>Transaction Report - Dated = " + date + "</h1><table cellpadding=\"5\" cellspacing=\"5\"><thead><td>Bill Date</td><td>Customer Name</td><td>Payment Status</td><td>Payment Mode</td><td>Bill Amount</td><td>Paid Amount</td><td>Pending Amount</td><td>Remarks</td></thead><tbody>";
 		for (var i = 0; i < data.length; i++) {
 			mytable += "<tr>";
+			mytable += "<td>" + data[i].chosenDate + "</td>";
 			mytable += "<td>" + data[i].selected + "</td>";
-			mytable += "<td>" + data[i].weight + "</td>";
-			mytable += "<td>" + data[i].rate + "</td>";
-			mytable += "<td>" + data[i].amount + "</td>";
-			mytable += "<td>" + data[i].marketrate + "</td>";
-			mytable += "<td>" + data[i].comments + "</td>";
+			mytable += "<td>" + data[i].payStat + "</td>";
+			mytable += "<td>" + data[i].paymentMode + "</td>";
+			mytable += "<td>" + data[i].billamount + "</td>";
+			mytable += "<td>" + data[i].payAmount + "</td>";
+            mytable += "<td>" + data[i].pendingAmount + "</td>";
+            mytable += "<td>" + data[i].remarks + "</td>";
 			mytable += "<tr>";
 		}
-		mytable += "<td></td><td></td><td> Total Amount: Rs. "+totalAmount+"</td><tr></tbody></table></body></html>";
+		mytable += "<td></td><td></td><td> Total Bill Amount: Rs. "+totalAmount+"</td><tr></tbody></table></body></html>";
 		let options = {
 			html: mytable,
-			fileName: 'ProcureReport' + date,
+			fileName: 'TransactionReport' + date,
 			directory: 'docs'
 		};
 
@@ -217,6 +219,7 @@ export default class DynamicList extends Component {
 		
 			actionOptions=[{text:'Order Details', icon:'ios-cart', iconColor:'red'},
 			{text:'Procurement Details', icon:'aperture', iconColor:'blue'},
+			{text:'Cash Flow Management', icon:'ios-barcode', iconColor:'green'},
 			{text:'LeftOver Inventory', icon:'ios-filing', iconColor:'black'},
 			{text:'Customer Bills', icon:'analytics', iconColor:'purple'}];
 		
@@ -232,7 +235,7 @@ androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 
 						</Button>
 					</Left>
 					<Body>
-						<Title>Procure List</Title>
+						<Title>Transaction List</Title>
 					</Body>
          		 <Right />
 				</Header>
@@ -243,18 +246,11 @@ androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 
 				}>
 					<View style={styles.addPanel}>
 					<Text style={{paddingBottom:5}}>Following list is editabe, you can use 'Add to Sheets' for final submission.</Text>
-					<Right><Text style={{paddingBottom:20, fontSize:22}}>Total: Rs. {this.props.total}</Text>
+					<Right><Text style={{paddingBottom:20, fontSize:22}}>Bill Total: Rs. {this.props.total}</Text>
 				</Right>
 						<Button block danger 
 							onPress={()=> 
-							ActionSheet.show({
-								options:actionOptions,
-								title:'Choose Procurement Type'},
-							buttonIndex => {
-										this.addData(buttonIndex);
-									  }
-								
-							)}>
+							this.addData()}>
 							<Text style={styles.addButtonText}>Add to Sheets</Text>
 						</Button> 
 					</View>
@@ -291,7 +287,7 @@ androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 
 				</Button>
 			</Left>
 			<Body>
-				<Title>Procure List</Title>
+				<Title>Transaction List</Title>
 			</Body>
 		  <Right />
 		</Header>
@@ -326,46 +322,28 @@ androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 
                     <View style={styles.contact}>
                         <Text style={[styles.name]}>{rowData.selected}</Text>
 						<View style={{flexDirection:'row'}}>
-                        <Text style={styles.phone}>Weight : {rowData.weight} {rowData.unit} |</Text>
-						<Text style={styles.phone}> Amount: {rowData.amount} Rs. |</Text>
-						<Text style={styles.phone}> Rate: {rowData.rate} / {rowData.unit} </Text></View>
+						<Text style={styles.phone}>Date: {rowData.billDate} |</Text>
+                        <Text style={styles.phone}>Status : {rowData.payStat} |</Text>
+						<Text style={styles.phone}>Mode: {rowData.paymentMode} |</Text></View>
 						<View style={{flexDirection:'row'}}>
-						<Text style={styles.phone}>Comments: {rowData.comments} |</Text>
-						<Text style={styles.phone}> Market Rate: {rowData.marketrate} Rs. </Text></View>
+						<Text style={styles.phone}>Bill: {rowData.billamount} Rs. </Text>
+						<Text style={styles.phone}>Paid: {rowData.payAmount} Rs. |</Text>
+						<Text style={styles.phone}>Pending: {rowData.pendingAmount} Rs. </Text>
+                        <Text style={styles.phone}>Remarks: {rowData.remarks} </Text></View>
                     </View>
-                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.uid,rowData.amount)}>
+                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.uid,rowData.billamount)}>
                         <Icon name='md-remove-circle' style={styles.deleteIcon}/>
                     </TouchableOpacity>
                 </View>
             </DynamicListRow>
 		);
 	}
-	addData(buttonIndex){
-		if(buttonIndex==0){
-		var formData = new FormData();
-		formData.append("values", JSON.stringify(this._data))
-		fetch('https://script.google.com/macros/s/AKfycbzH1s69Rx0ZgAbZfL2L27s9UH6KJR4oPwDsiq7cmDnAW_57IQKw/exec', {
-			mode: 'no-cors',
-			method: 'post',
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		}).then(function(response) {
-			
-			ToastAndroid.show('Updated ', ToastAndroid.SHORT)
-		}).catch(console.log);
-		this.createPDF(this._data);
-		this.setState({
-			sheet: false
-		});
-		this.props.newSession();
-			
-		}
-		else if(buttonIndex==1){
+	addData(){
+		
+	
 			var formData = new FormData();
 		formData.append("values", JSON.stringify(this._data))
-		fetch('https://script.google.com/macros/s/AKfycbyaudxHGu0wkGqPmQRHkGBEHoTJI6-jAPFtERIihearDxsKCEc/exec', {
+		fetch('https://script.google.com/macros/s/AKfycbwP0uGZlsRpVqrEpXz36v8B_BVJAlwgUwWsoTYLImotXjrFxXoX/exec', {
 			mode: 'no-cors',
 			method: 'post',
 			headers: {
@@ -381,47 +359,7 @@ androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 
 			sheet: false
 		});
 		this.props.newSession();
-		}
-		else if(buttonIndex==2){
-			var formData = new FormData();
-		formData.append("values", JSON.stringify(this._data))
-		fetch('https://script.google.com/macros/s/AKfycbz34V4CxmqEiSXwvjB2A3u5Wmv6K0nlbwqcQtFLXHSPFiyRct4H/exec', {
-			mode: 'no-cors',
-			method: 'post',
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		}).then(function(response) {
-
-			ToastAndroid.show('Updated'+ response, ToastAndroid.SHORT)
-		}).catch(console.log);
-		this.createPDF(this._data);
-		this.setState({
-			sheet: false
-		});
-		this.props.newSession();
-		}
-		else if(buttonIndex==3){
-			var formData = new FormData();
-		formData.append("values", JSON.stringify(this._data))
-		fetch('https://script.google.com/macros/s/AKfycbz1nK4pdiVadO8GhOGLy7Z3OQJLzvHP1kd2nc59o4JL5XN9htgy/exec', {
-			mode: 'no-cors',
-			method: 'post',
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		}).then(function(response) {
-
-			ToastAndroid.show('Updated'+ response, ToastAndroid.SHORT)
-		}).catch(console.log);
-		this.createPDF(this._data);
-		this.setState({
-			sheet: false
-		});
-		this.props.newSession();
-		}
+		
 	}
 
 	
@@ -440,11 +378,11 @@ androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 
 		}
 	}
 
-	_deleteItem(id, amount) {
+	_deleteItem(id, billamount) {
 		this.setState({
 			rowToDelete: id
 		});
-		this.props.delete(id, amount);
+		this.props.delete(id, billamount);
 	}
 
 	_onAfterRemovingElement() {

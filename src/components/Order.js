@@ -2,346 +2,466 @@ import React, {
 	Component
 } from 'react';
 import {
-	View,
-	ListView,
-	ListViewDataSource,
-	StyleSheet,
 	TouchableOpacity,
-	InteractionManager,
-	RefreshControl,
-	Animated,
-	Dimensions,
+	StyleSheet,
+	Image,
+	Alert,
 	ToastAndroid,
-	BackHandler
+	Picker,
+	AsyncStorage,
+	View,
+	Keyboard
 } from 'react-native';
-import Swipeout from 'react-native-swipeout';
+import CashFlowList from './CashFlowList';
+import Autocomplete from 'react-native-autocomplete-input';
 import {
 	Container,
 	Header,
 	Title,
 	Content,
+	Card,
+	CardItem,
 	Button,
+	Item,
+	Input,
 	Left,
 	Right,
 	Body,
 	Icon,
 	Text,
-	Badge,
-	Toast
+	Subtitle,
+	DatePicker
+
 } from 'native-base';
-import firebase from 'firebase';
-console.ignoredYellowBox=true
-
-const window = Dimensions.get('window');
-
-class DynamicListRow extends Component {
-
-	_defaultHeightValue = 60;
-	_defaultTransition = 500;
-
-	state = {
-		_rowHeight: new Animated.Value(this._defaultHeightValue),
-		_rowOpacity: new Animated.Value(0)
-	};
-
-	componentDidMount() {
-		Animated.timing(this.state._rowOpacity, {
-			toValue: 1,
-			duration: this._defaultTransition
-		}).start()
-
-		BackHandler.addEventListener('hardwareBackPress', () => {
-			return false
-		});
-	}
-
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.remove) {
-			this.onRemoving(nextProps.onRemoving);
-		} else {
-			this.resetHeight()
-		}
-	}
-
-	onRemoving(callback) {
-		Animated.timing(this.state._rowHeight, {
-			toValue: 0,
-			duration: this._defaultTransition
-		}).start(callback);
-	}
-
-	resetHeight() {
-		Animated.timing(this.state._rowHeight, {
-			toValue: this._defaultHeightValue,
-			duration: 0
-		}).start();
-	}
-
-	render() {
-		return (
-			<Animated.View
-                style={{height: this.state._rowHeight, opacity: this.state._rowOpacity}}>
-                {this.props.children}
-            </Animated.View>
-		);
-	}
-}
-
+import * as firebase from 'firebase';
 export default class Order extends Component {
+
 	constructor(props) {
+
 		super(props);
+
 		this.state = {
-			loading: true,
-			dataSource: new ListView.DataSource({
-				rowHasChanged: (row1, row2) => true
-			}),
-			refreshing: false,
-			rowToDelete: null,
-			sheet: true,
-			orderData: [],
-			num:0,
+			isLoading: false,
+			text: '',
+			selected: false,
+			billamount: '',
+			payAmount: '',
+			pendingAmount: '',
+			marketrate: '',
+			totalAmt: 0,
+			comments:'',
+			pList: [],
+			vList: false,
+			orderList: false,
+			num: 0,
+			allData:[],
+			unit:'kgs',
+			CommentsList:[],
+			authLevel:'',
+			authUser:'',
+			chosenDate: new Date()
 		};
 		
+		this.setDate = this.setDate.bind(this);
+	}
+	
+
+	setDate(newDate) {
+		this.setState({ chosenDate: newDate });
+	  }
+	getauthLevel(){
+		let authUserID= firebase.auth().currentUser.email	
+		  result=this.getUserLevelData(authUserID)
+		  if(result=='admin'){
+		  this.setState({authLevel:'admin'});
+		  }else if(result=='operator'){
+		  this.setState({authLevel:'operator'});
+		  }
+	}
+	getUserLevelData(userID){
+	fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userAuthLevel.json')
+	.then(response => response.json())
+    .then((data) => {
+       for(var i = 0; i < data.length; i++)
+		{
+  			if(data[i].email == userID)
+				  return data[i].auth
+				  break
+				  
+		}
+
+	});
+}
+	
+	getUserSpecificData(){
+		
+	fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userprocuredata.json')
+	.then(response => response.json())
+	.then((data) => {
+	  this.setState({allData:data})});
+
+  }
+	getData(){
+		
+	  fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userprocuredata%20.json')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({allData:data})});
+
+	}
+	getCommentsData(){
+		
+		fetch('https://rawgit.com/classicyamaha/mbooksdata/master/commentsData.json')
+		.then(response => response.json())
+		.then((data) => {
+		  this.setState({CommentsList:data})});
+  
+	  }
+
+	componentWillMount() {
+		/*this.getauthLevel();*/
+		/*if(this.state.authLevel=='admin'){*/
+		this.getData();
+		this.timer = setInterval(()=> this.getData(), 100000);/*}
+		else if(this.state.authLevel=='operator'){
+		this.getUserLevelData();
+		this.timeruser = setInterval(()=> this.getUserLevelData(), 100000);}*/
+		this.getCommentsData();
+		
+		this.timerComments = setInterval(()=> this.getCommentsData(), 100000);
+		
 	}
 
-	componentDidMount() {
+	addtoList() {
+		let key = Math.random().toString(36).substr(2);
 
-		InteractionManager.runAfterInteractions(() => {
-			this._loadData()
+		const {
+			pendingAmount,
+			payAmount,
+			billamount,
+			comments,
+			remarks,
+			paymentMode,
+			allData,
+			payStat,
+			selected,
+			chosenDate
+			
+		} = this.state;
+		this.setState((prevState) => {
+			prevState.pList.push({
+				billamount: billamount,
+				pendingAmount: pendingAmount,
+				selected: selected,
+				payAmount: payAmount,
+				payStat: payStat,
+				comments:comments,
+				remarks:remarks,
+				uid: key,
+				paymentMode:paymentMode,
+				billDate:chosenDate.toString().substr(4, 12),
+				UserID: firebase.auth().currentUser.email
+			});
+			return prevState;
 		});
-	}
-
-	_loadData(refresh) {
-		refresh && this.setState({
-			refreshing: true
-		});
-		this.readUserData();
-	}
-
-	dataLoadSuccess(result) {
-
-		this._data = result.data;
-
-		let ds = this.state.dataSource.cloneWithRows(this._data);
 
 		this.setState({
-			loading: false,
-			refreshing: false,
-			rowToDelete: -1,
-			dataSource: ds
+			billamount: '',
+			pendingAmount: '',
+			payAmount: '',
+			remarks: '',
+			comments:'',
+			paymentMode:0,
+			payStat:0
 		});
-		console.log(this._data);
+		ToastAndroid.show('Updated', ToastAndroid.SHORT)
+		Keyboard.dismiss();
 	}
-	_renderRow(rowData, sectionID, rowID) {
-		let swipeBtns = [{
-			text: 'Complete',
-			backgroundColor: '#26A65B',
-			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
-			onPress: () => { this._deleteItem(rowData) }
-		  }, {
-			text: 'Pending',
-			backgroundColor: '#F64747',
-			underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
-			onPress: () => { ToastAndroid.show('Pending',ToastAndroid.SHORT) }
-		 }];
-		 
-		return (
-			
-			<DynamicListRow>
-                <View style={styles.rowStyle}>
-				
-                    <View style={styles.contact}>
-					<Swipeout right={swipeBtns}
-					autoClose={true}
-       				 backgroundColor= 'transparent'>
-                        <Text style={styles.name}>Order: {rowData.orderitem}, Weight: {rowData.orderweight} kgs</Text>
-                        <Text style={styles.phone}>Dated: {rowData.date}, Order ID: {rowData.orderid}</Text>
-						
-					</Swipeout>
-                    </View>
-                </View>
-            </DynamicListRow>
-		);
+	deleteListData(rowToDelete, amount) {
+		let {
+			totalAmt
+		} = this.state
+		this.setState((prevState) => {
+			prevState.pList = prevState.pList.filter((dataname) => {
+				if (dataname.uid !== rowToDelete) {
+					return dataname;
+				} else {
+					prevState.totalAmt = prevState.totalAmt - parseFloat(amount);
+				}
+			});
+			return prevState;
+		});
 	}
-	  
-_deleteItem(rowData){
 
-	firebase.database().ref('orders').child(rowData.id).remove();
-	
-	ToastAndroid.show('Completed.',ToastAndroid.SHORT)
-}
+	showList() {
+		return <ListShow/>;
+	}
 
+	validator() {
+		let {
+			pendingAmount,
+			payAmount,
+			billamount,
+			selected,
+			totalAmt
+		} = this.state;
 
-	readUserData() {
-		let that = this;
-		firebase.database().ref('orders/').on('value', function(snapshot) {
-			let data = snapshot.val();
-			if(data !== null){
-			let orderData = [];
-			let keys = Object.keys(data);
-			let num=Object.keys(snapshot.val()).length;
-			keys.forEach(function(e) {
-				orderData.push(data[e]);
-			})
-			that.setState({
-				orderData: orderData
-			});
-			that.dataLoadSuccess({
-				data: orderData
-			});
-			
-			that.setState({num:num});
-		}else{
-			that.setState({orderData:[]})
-			that.setState({num:0});
+		if (pendingAmount == '' && payAmount != '' && billamount != '') {
+			let result = parseFloat(billamount) - parseFloat(payAmount);
+			result = result.toFixed(2);
+			pendingAmount = "" + result
+		} else if (payAmount == '' && pendingAmount != '' && billamount != '') {
+			let result = parseFloat(billamount) - parseFloat(pendingAmount);
+			result = result.toFixed(2);
+			payAmount = "" + result
+		} else if (billamount == '' && payAmount != '' && pendingAmount != '') {
+			let result = parseFloat(payAmount) + parseFloat(pendingAmount);
+			result = result.toFixed(2);
+			billamount = "" + result
+		} else {
+			return Alert.alert('Error', 'Please check the data');
 		}
+		totalAmt = totalAmt + parseFloat(billamount)
+		this.setState({
+			totalAmt
 		});
+		console.log(totalAmt);
+		this.setState({
+				billamount,
+				payAmount,
+				pendingAmount
+			},
+			() => this.addtoList());
+			
+	}
+	logout() {
+		firebase.auth().signOut().then(function() {
+			// Sign-out successful.
+		}, function(error) {
+			Alert.alert('Error', 'Temporary Error, 400');
+		});
+	}
+	newSession() {
+		this.setState({
+			pList: []
+		});
+	}
 
+	renderSelected(item) {
+		const {
+			pendingAmount,
+			payAmount,
+			billamount,
+			comments,
+			remarks,
+			paymentMode,
+			allData,
+			payStat
+		} = this.state;
+		if (!!!item) {
+			return null;
+		}
+		item = allData.filter((e) => e.label == item)[0];
+		return <Card>
+			<CardItem cardBody>
+				<Image source = {{ uri: item.image }} style={style.cardImage} />
+			</CardItem>
+			<CardItem>
+				<Left>
+					<Text style={style.inputTextStyle}>{item.label}</Text>
+				</Left>
+			</CardItem>
+			<CardItem cardBody>
+				<Content style={
+					{
+						padding: 10,
+						borderTopWidth: 1,
+						borderColor: "#dadada"
+					}
+				}>
+				
+				<Item>
+				<Icon type="MaterialIcons" name="date-range" />
+				<DatePicker
+            minimumDate={new Date(2015, 1, 1)}
+            maximumDate={new Date(2025, 12, 31)}
+            locale={"en"}
+            timeZoneOffsetInMinutes={undefined}
+            modalTransparent={false}
+            animationType={"fade"}
+            androidMode={"default"}
+            placeHolderText="Select Bill Date"
+            textStyle={{ color: "black" }}
+            placeHolderTextStyle={{ color: "#d3d3d3" }}
+            onDateChange={this.setDate}
+            />
+            
+				</Item>
+					<Item>
+						<Icon name="ios-pricetag" />
+						<Picker
+							  selectedValue={payStat}
+							  mode='dropdown'
+  							style={{ height: 50, width: 345 }}
+  							onValueChange={(itemValue, itemIndex) => this.setState({payStat: itemValue})}>
+  							<Picker.Item label="Payment Status" value="0" />
+							<Picker.Item label="Full Payment" value="full" />
+  							<Picker.Item label="Pending" value="pending" />
+							<Picker.Item label="Partial Payment" value="partial" />
+						</Picker>
+					</Item>
+					<Item>
+					<Icon type="MaterialIcons" name="payment" />
+						<Picker
+							  selectedValue={paymentMode}
+							  mode='dropdown'
+							  placeholder="Payment Mode"
+  							style={{ height: 50, width: 340 }}
+  							onValueChange={(itemValue, itemIndex) => this.setState({paymentMode: itemValue})}>
+  							<Picker.Item label="Payment Mode" value="0" />
+							  <Picker.Item label="Cash" value="cash" />
+  							<Picker.Item label="Wallet" value="wallet" />
+							<Picker.Item label="Bank Transfer" value="banktransfer" />
+						</Picker>
+          			
+					</Item>
+					<Item>
+						<Icon type="MaterialCommunityIcons" name="cash-multiple" />
+							<Input
+							onChangeText={billamount => this.setState({ billamount })}
+							value={billamount}	
+							keyboardType="numeric"
+							placeholder="Bill Amount" />
+					</Item>
+					<Item>
+						<Icon  type="MaterialCommunityIcons" name="cash-usd" />
+						<Input
+							onChangeText={payAmount => this.setState({ payAmount })}
+							value={payAmount}
+							keyboardType="numeric"
+							placeholder="Paid Amount" />
+					</Item>
+					<Item>
+						<Icon  type="MaterialCommunityIcons" name="cash-100" />
+						<Input
+							onChangeText={pendingAmount => this.setState({ pendingAmount })}
+							value={pendingAmount}
+							keyboardType="numeric"
+							placeholder="Pending Amount" />
+					</Item>
+					<Item>
+						<Icon  type="FontAwesome" name="comment" />
+						<Input
+							onChangeText={remarks => this.setState({ remarks })}
+							value={remarks}
+							placeholder="Remarks" />
+					</Item>
+
+				</Content>
+			</CardItem>
+			
+			
+			
+			<CardItem>
+		<Content>
+					<Button block info onPress={() => this.validator()}>
+						<Text>Add Transaction</Text>
+					</Button>
+				</Content>
+				
+			</CardItem>
+			<CardItem>
+			<Content style={
+					{
+						padding: 10,
+						borderTopWidth: 1,
+						borderColor: "#dadada"
+					}
+			}> 
+			<Button block danger onPress={()=>this.setState({vList:true})}>
+						<Text>Generate Report</Text>
+					</Button>
+			</Content>
+			</CardItem>
+		</Card>;
 	}
 	render() {
-		return (
-			<Container>
-				<Header style={{backgroundColor:"rgba(1, 50, 67, 1)"}}>
-					<Left>
-						<Button transparent onPress={()=>this.props.back()}>
-							<Icon name='arrow-back' />
-						</Button>
-					</Left>
-					<Body>
-						<Title>Orders</Title>
-					</Body>
-         		 <Right />
-				</Header>
-            
-                <ListView
-						refreshControl={
-							<RefreshControl
-							refreshing={this.state.refreshing}
-							onRefresh={this._loadData.bind(this, true)}
-							tintColor="#00AEC7"
-							title="Loading..."
-							titleColor="#00AEC7"
-							colors={['#FFF', '#FFF', '#FFF']}
-							progressBackgroundColor="#00AEC7"
+		if (this.state.orderList) {
+			return <Order back={()=> this.setState({orderList:false})} list={this.state.pList} number={this.state.num} />
+		} else if (this.state.vList) {
+			return <CashFlowList 
+			authLevel={this.state.authLevel}
+			list={this.state.pList} 
+			back={()=>this.setState({vList:false})} 
+			delete={(rowToDelete,billamount)=>this.deleteListData(rowToDelete,billamount)} 
+			total={this.state.totalAmt}
+			newSession={()=>this.setState({pList:[],totalAmt:0})}
+			 />;
+		} else {
 
-							/>
-						}
-						enableEmptySections={true}
-						dataSource={this.state.dataSource}
-						renderRow={this._renderRow.bind(this)}
+			const {
+				text,
+				selected,
+				allData
+			} = this.state;
+			let data = [];
+			if (text.length) {
+				data = allData.filter((e) => e.label.toLowerCase().startsWith(text.toLowerCase())).map((e) => e.label);
+			}
+			return (
+				<Container>
+				<Header iosStatusbar="light-content"
+androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 67, 1)"}}>
+					<Body>
+						
+						<Title>Cash Flow Manage</Title>
+						<Subtitle>Meri Mandi</Subtitle>
+					</Body>
+					<Right>
+						<Button hasText transparent onPress={this.logout}>
+							<Text> <Icon style={{color:'white', fontSize:16}} type="Entypo" name="log-out"/> Logout</Text>
+						</Button>
+					</Right>
+				</Header>	
+				<Content style={
+					{
+						padding: 10
+					}
+				}>
+				
+					<Autocomplete
+						style={{height:45}}
+						data={data}
+						onChangeText={text => text && this.setState({ text })}
+						renderItem={item => (
+							<TouchableOpacity onPress={() => this.setState({ text: item, selected: item })}>
+								<Text style={style.inputTextStyle}>{item}</Text>
+							</TouchableOpacity>
+						)}
 					/>
-            
-            </Container>);
+					{this.renderSelected(selected)}
+				</Content>
+				
+			</Container>
+			);
+		}
 	}
 
 }
-const styles = StyleSheet.create({
-	subText: {
-		paddingHorizontal:10,
-		paddingTop:2,
-		paddingBottom:2,
-		fontSize: 12,
-		fontFamily: "sans-serif",
-		
-
+const style = StyleSheet.create({
+	listText: {
+		fontSize: 14
 	},
-	HeaderText: {
-		padding: 10,
-		color:'white',
-		fontWeight: "600",
+	timeStampStyle: {
+		fontSize: 16
+	},
+	inputTextStyle: {
 		fontSize: 22,
-		fontFamily: "sans-serif"
 
 	},
-	container: {
-		flex: 1,
-		backgroundColor: '#fff'
-	},
-	noData: {
-		color: '#000',
-		fontSize: 18,
-		alignSelf: 'center',
-		top: 200
-	},
-
-	addPanel: {
-		paddingTop: 10,
-		paddingBottom: 10,
-		backgroundColor: 'rgba(1, 50, 67, 1)'
-	},
-	addButton: {
-		backgroundColor: '#0A5498',
-		width: 120,
-		alignSelf: 'flex-end',
-		marginRight: 10,
-		padding: 5,
-		borderRadius: 5
-	},
-	addButtonText: {
-		color: '#fff',
-		alignSelf: 'center'
-	},
-
-	rowStylePending: {
-		backgroundColor: '#EC644B',
-		paddingVertical: 2,
-		paddingHorizontal: 5,
-		borderBottomColor: '#ccc',
-		borderBottomWidth: 1,
-		flexDirection: 'row',
-		
-	},
-
-	rowStyle: {
-		backgroundColor: '#FFF',
-		paddingVertical: 2,
-		paddingHorizontal: 5,
-		borderBottomColor: '#ccc',
-		borderBottomWidth: 1,
-		flexDirection: 'row',
-		
-	},
-
-	rowIcon: {
-		width: 30,
-		alignSelf: 'flex-start',
-		marginHorizontal: 10,
-		fontSize: 24
-	},
-
-	name: {
-		fontWeight: "500",
-		color: '#212121',
-		fontSize: 16
-	},
-	phone: {
-		
-		color: '#212121',
-		fontSize: 16
-	},
-	contact: {
-		width: window.width-10,
-		alignSelf: 'flex-start'
-	},
-
-	dateText: {
-		fontSize: 10,
-		color: '#ccc',
-		marginHorizontal: 10
-	},
-	deleteWrapper: {
-		paddingVertical: 5,
-		width: 60,
-		alignSelf: 'flex-end'
-	},
-	keepWrapper: {
-		paddingVertical: 5,
-		width: 60,
-		alignSelf: 'center'
-	},
-	deleteIcon: {
-		fontSize: 24,
-		color: '#DA281C',
-		alignSelf: 'center'
+	cardImage: {
+		height: 200,
+		width: null,
+		flex: 1
 	}
-});
+})

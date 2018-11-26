@@ -13,7 +13,8 @@ import {
 	ActivityIndicator,
 	Alert,
 	AsyncStorage,
-	ToastAndroid
+	ToastAndroid,
+	StatusBar
 } from 'react-native';
 import * as firebase from 'firebase';
 import ScreenNavigator from './ScreenNavigator';
@@ -83,7 +84,7 @@ export default class LoginForm extends Component {
 	render() {
 		if (this.state.loading) {
 			return <View style={styles.logoContainer}>
-          <ActivityIndicator size="large"/>
+          <ActivityIndicator style={styles.loading} size="large"/>
         </View>;
 		}
 		if (this.state.authUser) {
@@ -91,14 +92,18 @@ export default class LoginForm extends Component {
 		} else {
 			return <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
         <View style={styles.logoContainer}>
+		<StatusBar
+     backgroundColor="rgba(30, 139, 195, 1)"
+     barStyle="light-content"
+   />
         <Image 
         style={styles.logoStyle}
         source={require('../images/logo.png')}/>
-        <Text style={styles.TextStyle}>Procurement Service</Text>
+        <Text style={styles.TextStyle}>Internal Management</Text>
         </View>
         <View style={styles.loginContainer}>
               <TextInput placeholder="username"
-              placeholderTextColor='#FFF'
+              placeholderTextColor='#000'
               autoCapitalize="none"
               autoCorrect={false}
               onSubmitEditing={()=>this.passwordInput.focus()}
@@ -107,7 +112,7 @@ export default class LoginForm extends Component {
               onChangeText={username => this.setState({username})}/>
               <TextInput 
               placeholder="password"
-              placeholderTextColor='#FFF'
+              placeholderTextColor='#000'
               secureTextEntry
               ref={(input)=> this.passwordInput=input}
               style={styles.TextInputStyle}
@@ -115,7 +120,7 @@ export default class LoginForm extends Component {
               onChangeText={password => this.setState({password})}/>
               <TouchableOpacity style={styles.ButtonStyle} onPress={()=> this.onPressSignIn()}>
               <Text style={styles.ButtonTextStyle}>Log In - Create User</Text></TouchableOpacity>
-			  <Text style={{color:'black', textAlign:'center'}}>Version: 1.0.0, Sanaur Rahman</Text>
+			  <Text style={{color:'black', textAlign:'center'}}>Version: 1.1.0, Sanaur Rahman</Text>
             </View>
       </KeyboardAvoidingView>;
 		}
@@ -123,6 +128,15 @@ export default class LoginForm extends Component {
 }
 
 const styles = StyleSheet.create({
+	loading: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		alignItems: 'center',
+		justifyContent: 'center'
+	  },
 	ButtonTextStyle: {
 		textAlign: 'center',
 		color: '#FFF',
@@ -137,7 +151,7 @@ const styles = StyleSheet.create({
 	},
 	TextInputStyle: {
 		height: 40,
-		backgroundColor: 'rgba(129, 207, 224, 1)',
+		backgroundColor: 'rgba(82, 179, 217, 1)',
 		marginBottom: 20,
 		paddingHorizontal: 10,
 		color: 'rgba(36, 37, 42, 1)'
@@ -147,7 +161,7 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1,
-		backgroundColor: 'rgba(30, 139, 195, 0.45)',
+		backgroundColor: 'rgba(30, 139, 195, 1)',
 	},
 	logoContainer: {
 		justifyContent: 'center',
@@ -163,7 +177,7 @@ const styles = StyleSheet.create({
 	},
 	TextStyle: {
 		fontSize: 25,
-		color: '#03A678',
+		color: 'rgba(1, 50, 67, 1)',
 
 	}
 });

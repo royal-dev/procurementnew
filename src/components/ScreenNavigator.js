@@ -14,14 +14,14 @@ export default createBottomTabNavigator({
     MainScreen:{
         screen: MainScreen,
         navigationOptions:{
-            tabBarLabel: 'Main',
-            tabBarIcon:({tintColor})=>(<Icon name='md-search' 
+            tabBarLabel: 'Procure',
+            tabBarIcon:({tintColor})=>(<Icon name='ios-compass' 
             color={tintColor} size={24}/>)}},
     Order:{
         screen: Order,
         navigationOptions:{
-            tabBarLabel: 'Orders',
-            tabBarIcon:({tintColor})=>(<Icon name='md-cart' 
+            tabBarLabel: 'Cash Flow',
+            tabBarIcon:({tintColor})=>(<Icon name='md-cash' 
             color={tintColor} size={24}/>)}},
     
    

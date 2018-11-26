@@ -8,7 +8,8 @@ import {
 	Alert,
 	ToastAndroid,
 	Picker,
-	AsyncStorage
+	AsyncStorage,
+	Keyboard
 } from 'react-native';
 import ListShow from './ListShow';
 import Order from './Order';
@@ -60,21 +61,17 @@ export default class MainScreen extends Component {
 		};
 
 	}
+	
+
+
 	getauthLevel(){
-		let authUserID
-		firebase.auth().onAuthStateChanged(function(user) {
-			if (user) {
-			  authUserID=firebase.auth().currentUser.email
-			} else {
-			  // No user is signed in.
-			}
-		  });
-		result=this.getUserLevelData(authUserID)
-		if(result=='admin'){
-			this.setState({authLevel:'admin'});
-		}else if(result=='operator'){
-			this.setState({authLevel:'operator'});
-		}
+		let authUserID= firebase.auth().currentUser.email	
+		  result=this.getUserLevelData(authUserID)
+		  if(result=='admin'){
+		  this.setState({authLevel:'admin'});
+		  }else if(result=='operator'){
+		  this.setState({authLevel:'operator'});
+		  }
 	}
 	getUserLevelData(userID){
 	fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userAuthLevel.json')
@@ -84,6 +81,8 @@ export default class MainScreen extends Component {
 		{
   			if(data[i].email == userID)
 				  return data[i].auth
+				  break
+				  
 		}
 
 	});
@@ -91,7 +90,7 @@ export default class MainScreen extends Component {
 	
 	getUserSpecificData(){
 		
-	fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userprocuredata.json')
+	fetch('https://rawgit.com/classicyamaha/mbooksdata/master/userprocuredata%20.json')
 	.then(response => response.json())
 	.then((data) => {
 	  this.setState({allData:data})});
@@ -115,15 +114,17 @@ export default class MainScreen extends Component {
 	  }
 
 	componentWillMount() {
-		this.getauthLevel();
-		if(this.state.authLevel=='admin'){
-		this.getData();}
+		/*this.getauthLevel();*/
+		/*if(this.state.authLevel=='admin'){*/
+		this.getData();
+		this.timer = setInterval(()=> this.getData(), 100000);/*}
 		else if(this.state.authLevel=='operator'){
-		this.getUserLevelData();}
+		this.getUserLevelData();
+		this.timeruser = setInterval(()=> this.getUserLevelData(), 100000);}*/
 		this.getCommentsData();
-		this.timeruser = setInterval(()=> this.getUserLevelData(), 100000);
+		
 		this.timerComments = setInterval(()=> this.getCommentsData(), 100000);
-		this.timer = setInterval(()=> this.getData(), 100000);
+		
 	}
 
 	addtoList() {
@@ -148,7 +149,7 @@ export default class MainScreen extends Component {
 				comments:comments,
 				uid: key,
 				unit:unit,
-				userID: firebase.auth().currentUser.email
+				UserID: firebase.auth().currentUser.email
 			});
 			return prevState;
 		});
@@ -158,9 +159,10 @@ export default class MainScreen extends Component {
 			weight: '',
 			rate: '',
 			marketrate: '',
-			comments:'',
+			unit:'kgs'
 		});
 		ToastAndroid.show('Updated', ToastAndroid.SHORT)
+		Keyboard.dismiss();
 	}
 	deleteListData(rowToDelete, amount) {
 		let {
@@ -221,6 +223,7 @@ export default class MainScreen extends Component {
 				rate
 			},
 			() => this.addtoList());
+			
 	}
 	logout() {
 		firebase.auth().signOut().then(function() {
@@ -251,6 +254,7 @@ export default class MainScreen extends Component {
 			return null;
 		}
 		item = allData.filter((e) => e.label == item)[0];
+	
 		return <Card>
 			<CardItem cardBody>
 				<Image source = {{ uri: item.image }} style={style.cardImage} />
@@ -292,7 +296,8 @@ export default class MainScreen extends Component {
 						<Item>
 						
             			<Picker
-  							selectedValue={unit}
+							  selectedValue={unit}
+							  mode='dropdown'
   							style={{ height: 50, width: 150 }}
   							onValueChange={(itemValue, itemIndex) => this.setState({unit: itemValue})}>
   							<Picker.Item label="Kilograms" value="kg" />
@@ -311,14 +316,24 @@ export default class MainScreen extends Component {
 							placeholder="Market Rate" />
 					</Item>
 					<Item>
-						<Icon  type='FontAwesome' name="comment-o" />
+						
+						<Icon  type='Ionicons' name="md-people" />
 						<Picker
 						style={{ height: 50, width: 340 }}
+						mode='dropdown'
+						placeholder='Choose from List..'
                         selectedValue={this.state.comments}
                         onValueChange={(itemValue, itemIndex) => this.setState({ comments: itemValue })} >
                         {this.state.CommentsList.map((item, key) => {
                         return (<Picker.Item label={item.item} value={item.value} key={key} />)})}
                         </Picker>
+					</Item>
+					<Item>
+						<Icon name="ios-code-working" />
+							<Input
+							onChangeText={comments => this.setState({ comments })}
+							value={comments}
+							placeholder="If Others please specify" />
 					</Item>
 
 				</Content>
@@ -374,7 +389,9 @@ export default class MainScreen extends Component {
 			}
 			return (
 				<Container>
-				<Header style={{backgroundColor:"rgba(1, 50, 67, 1)"}}>
+				<Header iosStatusbar="light-content"
+androidStatusBarColor='rgba(1, 50, 67, 1)' style={{backgroundColor:"rgba(1, 50, 67, 1)"}}>
+				
 					<Body>
 						<Title>Procure Service</Title>
 						<Subtitle>Meri Mandi</Subtitle>
@@ -392,6 +409,7 @@ export default class MainScreen extends Component {
 				}>
 				
 					<Autocomplete
+						style={{height:45}}
 						data={data}
 						onChangeText={text => text && this.setState({ text })}
 						renderItem={item => (
